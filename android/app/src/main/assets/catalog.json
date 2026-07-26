@@ -1,0 +1,23 @@
+{
+  "generatedWith": "placeholder — replaced at build time by your scraped catalog.json",
+  "channels": [
+    {
+      "id": "numberblocks",
+      "title": "Numberblocks",
+      "color": "#e5322d",
+      "collections": [
+        {
+          "id": "placeholder-s1",
+          "title": "Season 1 (sample)",
+          "color": "#d11f1f",
+          "episodes": [
+            { "name": "One", "season": 1, "episode": 1, "videoId": "U7JseubSgh0", "thumbnail": "https://i.ytimg.com/vi/U7JseubSgh0/hqdefault.jpg", "url": "https://www.youtube.com/watch?v=U7JseubSgh0" },
+            { "name": "Another One", "season": 1, "episode": 2, "videoId": "_WIgiKrdzIg", "thumbnail": "https://i.ytimg.com/vi/_WIgiKrdzIg/hqdefault.jpg", "url": "https://www.youtube.com/watch?v=_WIgiKrdzIg" },
+            { "name": "Two", "season": 1, "episode": 3, "videoId": "sX92jKx-HeU", "thumbnail": "https://i.ytimg.com/vi/sX92jKx-HeU/hqdefault.jpg", "url": "https://www.youtube.com/watch?v=sX92jKx-HeU" },
+            { "name": "Three", "season": 1, "episode": 4, "videoId": "GnxrupPfE9E", "thumbnail": "https://i.ytimg.com/vi/GnxrupPfE9E/hqdefault.jpg", "url": "https://www.youtube.com/watch?v=GnxrupPfE9E" }
+          ]
+        }
+      ]
+    }
+  ]
+}

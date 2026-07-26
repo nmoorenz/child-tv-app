@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Numberblocks TV — Preview &amp; Data Check</title>
+<style>
+  :root{
+    --bg:#0f1220; --panel:#181c2e; --panel2:#20263d; --ink:#f4f6ff;
+    --muted:#9aa3c4; --accent:#e5322d; --focus:#ffd43b; --good:#2ecc71; --warn:#ffab3d;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:var(--bg);color:var(--ink);
+    font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif}
+  header{display:flex;align-items:center;gap:16px;padding:14px 22px;
+    background:linear-gradient(180deg,#151a2e,#0f1220);border-bottom:1px solid #262c45;
+    position:sticky;top:0;z-index:20}
+  .brand{font-weight:800;font-size:20px;letter-spacing:.3px}
+  .brand small{color:var(--muted);font-weight:600;font-size:12px;display:block}
+  .tabs{display:flex;gap:8px;margin-left:8px}
+  .tab{background:var(--panel);border:1px solid #2b3350;color:var(--ink);
+    padding:9px 16px;border-radius:999px;cursor:pointer;font-size:14px;font-weight:600}
+  .tab.active{background:var(--accent);border-color:var(--accent)}
+  .spacer{flex:1}
+  .btn{background:var(--panel2);border:1px solid #33406b;color:var(--ink);
+    padding:9px 14px;border-radius:10px;cursor:pointer;font-size:13px}
+  .btn:hover{border-color:#5b6cc4}
+  .note{font-size:12px;color:var(--muted)}
+  main{padding:0}
+  .view{display:none}
+  .view.active{display:block}
+
+  /* ---------- TV APP MOCKUP ---------- */
+  #tv{padding:26px 34px 60px}
+  .tv-hint{display:flex;gap:14px;align-items:center;color:var(--muted);
+    font-size:13px;margin:0 0 18px}
+  .kbd{display:inline-block;background:#0b0e1a;border:1px solid #333c60;border-bottom-width:2px;
+    border-radius:6px;padding:2px 8px;font-size:12px;color:#cdd5f5}
+  .home-title{font-size:26px;font-weight:800;margin:6px 0 2px}
+  .home-sub{color:var(--muted);margin:0 0 18px;font-size:14px}
+  .row{margin:26px 0}
+  .row h3{margin:0 0 12px;font-size:18px;font-weight:700;display:flex;align-items:center;gap:10px}
+  .row h3 .pill{font-size:12px;color:var(--muted);background:#0b0e1a;border:1px solid #2b3350;
+    border-radius:999px;padding:2px 10px;font-weight:600}
+  .tiles{display:flex;gap:16px;overflow-x:auto;padding:8px 4px 14px;scroll-behavior:smooth}
+  .tiles::-webkit-scrollbar{height:8px}
+  .tiles::-webkit-scrollbar-thumb{background:#2b3350;border-radius:8px}
+  .tile{flex:0 0 auto;width:210px;background:var(--panel);border:2px solid transparent;
+    border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .12s,border-color .12s;
+    outline:none}
+  .tile .thumb{width:100%;height:118px;display:block;object-fit:cover;background:#0b0e1a}
+  .tile .meta{padding:10px 12px}
+  .tile .ep{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.4px}
+  .tile .t{font-size:14px;font-weight:700;line-height:1.25;margin-top:3px;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:36px}
+  .tile:focus,.tile.focus{border-color:var(--focus);transform:scale(1.06);
+    box-shadow:0 10px 30px rgba(0,0,0,.5)}
+
+  /* ---------- MODAL ---------- */
+  .modal-bg{position:fixed;inset:0;background:rgba(6,8,16,.72);display:none;
+    align-items:center;justify-content:center;z-index:50;padding:20px}
+  .modal-bg.show{display:flex}
+  .modal{background:var(--panel);border:1px solid #2b3350;border-radius:18px;
+    max-width:520px;width:100%;overflow:hidden}
+  .modal img{width:100%;height:220px;object-fit:cover;background:#0b0e1a}
+  .modal .body{padding:18px 20px}
+  .modal h2{margin:0 0 6px;font-size:20px}
+  .modal p{color:var(--muted);font-size:14px;margin:6px 0}
+  .modal .actions{display:flex;gap:10px;margin-top:16px}
+  .modal .play{background:var(--accent);border:none;color:#fff;font-weight:800;
+    padding:12px 18px;border-radius:12px;cursor:pointer;font-size:15px;flex:1}
+  .modal .close{background:var(--panel2);border:1px solid #33406b;color:var(--ink);
+    padding:12px 18px;border-radius:12px;cursor:pointer}
+  .code{font-family:ui-monospace,Consolas,monospace;font-size:12px;background:#0b0e1a;
+    border:1px solid #2b3350;border-radius:8px;padding:8px 10px;color:#a9ffcf;word-break:break-all}
+
+  /* ---------- DATA CHECK ---------- */
+  #data{padding:24px 34px 60px}
+  .cards{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 20px}
+  .card{background:var(--panel);border:1px solid #2b3350;border-radius:14px;padding:14px 18px;min-width:150px}
+  .card .n{font-size:26px;font-weight:800}
+  .card .l{font-size:12px;color:var(--muted);margin-top:2px}
+  .status{padding:10px 14px;border-radius:10px;font-size:13px;margin:0 0 18px;display:inline-block}
+  .status.sample{background:rgba(255,171,61,.12);border:1px solid var(--warn);color:#ffd9a3}
+  .status.real{background:rgba(46,204,113,.12);border:1px solid var(--good);color:#b8ffd6}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid #232a44;vertical-align:middle}
+  th{color:var(--muted);font-weight:700;position:sticky;top:64px;background:var(--bg)}
+  td .mini{width:88px;height:50px;border-radius:6px;object-fit:cover;background:#0b0e1a;display:block}
+  td.id{font-family:ui-monospace,Consolas,monospace;color:#a9c7ff}
+  td a{color:#7aa2ff}
+  .miss{color:var(--warn);font-style:italic}
+  .colhdr{margin:26px 0 8px;font-size:16px;font-weight:800;color:#cdd5f5}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">Numberblocks TV <small>preview &amp; data check</small></div>
+  <div class="tabs">
+    <button class="tab active" data-view="tv">📺 TV App Preview</button>
+    <button class="tab" data-view="data">✅ Data Check</button>
+  </div>
+  <div class="spacer"></div>
+  <span id="src" class="note">showing: sample data</span>
+  <button class="btn" id="loadBtn">Load catalog.json…</button>
+  <input type="file" id="file" accept=".json" style="display:none">
+</header>
+
+<main>
+  <!-- TV APP PREVIEW -->
+  <section class="view active" id="tv">
+    <div class="tv-hint">
+      <span>Navigate like a TV remote:</span>
+      <span><span class="kbd">◀</span><span class="kbd">▶</span><span class="kbd">▲</span><span class="kbd">▼</span> move</span>
+      <span><span class="kbd">Enter</span> open</span>
+      <span>— this is a mockup of what your child sees on the Android TV.</span>
+    </div>
+    <div class="home-title" id="homeTitle">Numberblocks</div>
+    <div class="home-sub">Pick an episode — no typing, no YouTube menus.</div>
+    <div id="rows"></div>
+  </section>
+
+  <!-- DATA CHECK -->
+  <section class="view" id="data">
+    <div id="status" class="status sample">⚠ Sample data — run the scraper and load catalog.json to verify the real episodes.</div>
+    <div class="cards" id="cards"></div>
+    <div id="tables"></div>
+  </section>
+</main>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <img id="mImg" alt="">
+    <div class="body">
+      <div class="ep" id="mEp" style="color:var(--muted);font-weight:700;font-size:12px"></div>
+      <h2 id="mTitle"></h2>
+      <p id="mDesc"></p>
+      <p class="note">On the real Android TV app this button fires a deep-link that opens <b>this exact video</b> in the YouTube app and plays it. Your child never browses YouTube's menus.</p>
+      <div class="code" id="mLink"></div>
+      <div class="actions">
+        <button class="play" id="mPlay">▶ Play on YouTube</button>
+        <button class="close" id="mClose">Back</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ------------------------------------------------------------------
+   SAMPLE CATALOG  (renders standalone so you can judge the UI now).
+   videoId is null here, so tiles show generated placeholder art and
+   links fall back to a YouTube search. After you run build_catalog.py,
+   click "Load catalog.json" to replace all of this with real data.
+------------------------------------------------------------------- */
+const SAMPLE = {
+  sample: true,
+  channels: [{
+    id:"numberblocks", title:"Numberblocks", color:"#e5322d",
+    youtubeChannelId:"UCPlwvN0w4qFSP1FllALB92w",
+    collections:[
+      { id:"s1", title:"Season 1", color:"#d11f1f", episodes:[
+        {episode:1,title:"One",n:1},
+        {episode:2,title:"Another One",n:2},
+        {episode:3,title:"Two",n:2},
+        {episode:7,title:"Five",n:5},
+        {episode:15,title:"Hide and Seek",n:5},
+      ]},
+      { id:"s2", title:"Season 2", color:"#f57c00", episodes:[
+        {episode:1,title:"Six",n:6},
+        {episode:5,title:"Ten",n:10},
+        {episode:9,title:"Double Trouble",n:2},
+        {episode:15,title:"Ten Green Bottles",n:10},
+      ]},
+      { id:"s3", title:"Season 3", color:"#ffd21e", episodes:[
+        {episode:1,title:"Once Upon a Time",n:5},
+        {episode:2,title:"Blockzilla",n:5},
+        {episode:5,title:"Zero",n:0},
+        {episode:16,title:"Flatland",n:10},
+        {episode:28,title:"Fifteen",n:15},
+      ]},
+      { id:"s4", title:"Season 4", color:"#5fbf3b", episodes:[
+        {episode:11,title:"Twenty",n:20},
+        {episode:25,title:"Fifty",n:50},
+        {episode:27,title:"The Big One",n:100},
+        {episode:28,title:"One Hundred",n:100},
+      ]},
+      { id:"s5", title:"Season 5", color:"#39b6ff", episodes:[
+        {episode:9,title:"Two Times Shoe Shop",n:2},
+        {episode:24,title:"Four on the Floor",n:4},
+        {episode:25,title:"Sky High Fives",n:5},
+      ]},
+      { id:"s6", title:"Season 6", color:"#7a52cc", episodes:[
+        {episode:6,title:"Shape Party",n:4},
+        {episode:11,title:"Five's Handy Shop",n:5},
+      ]},
+      { id:"s7", title:"Season 7", color:"#e91e8c", episodes:[
+        {episode:1,title:"Grid Unlocked",n:5},
+        {episode:8,title:"Sail the Seven Seas",n:7},
+        {episode:11,title:"Super Eights Assemble",n:8},
+      ]},
+      { id:"s8", title:"Season 8", color:"#00b8a9", episodes:[
+        {episode:1,title:"Episode 1",n:9},
+        {episode:2,title:"Episode 2",n:10},
+      ]},
+    ]
+  }]
+};
+
+/* ---- placeholder art: stacked coloured blocks showing the number ---- */
+const PALETTE={1:"#d11f1f",2:"#f57c00",3:"#ffd21e",4:"#5fbf3b",5:"#39b6ff",6:"#7a52cc",
+  7:"#c0392b",8:"#e91e8c",9:"#8d6e63",10:"#ffffff",11:"#c0392b",12:"#e91e8c",13:"#5fbf3b",
+  14:"#39b6ff",20:"#7a52cc",100:"#ffd21e"};
+function placeholder(n,label){
+  n=n||1; const c=PALETTE[n]||"#39b6ff";
+  const shown=Math.min(n,10); let blocks="";
+  const size=20, gap=3, cols=Math.min(shown,5);
+  const rows=Math.ceil(shown/cols);
+  const startX=(420-(cols*size+(cols-1)*gap))/2;
+  const startY=118-8-(rows*size+(rows-1)*gap);
+  for(let i=0;i<shown;i++){
+    const r=Math.floor(i/cols), col=i%cols;
+    const x=startX+col*(size+gap), y=startY+ (rows-1-r)*(size+gap);
+    blocks+=`<rect x="${x}" y="${y}" width="${size}" height="${size}" rx="3" fill="${c}" stroke="#00000030"/>`;
+  }
+  const big = n>10 ? `<text x="210" y="60" font-size="46" font-weight="800" fill="#fff" text-anchor="middle" font-family="Arial">${n}</text>`:"";
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="420" height="236" viewBox="0 0 420 118">
+    <rect width="420" height="118" fill="#141a2c"/>${big}${blocks}
+    <text x="210" y="16" font-size="11" fill="#8ea0d8" text-anchor="middle" font-family="Arial">sample art</text>
+  </svg>`;
+  return "data:image/svg+xml;utf8,"+encodeURIComponent(svg);
+}
+
+/* ------------------------------------------------------------------ */
+// Accept both the sample shape and the scraper's output shape.
+function normalizeCatalog(cat){
+  (cat.channels||[]).forEach(ch=>(ch.collections||[]).forEach(col=>{
+    col.episodes=(col.episodes||[]).map((e,i)=>{
+      const title=e.title||e.name||e.rawTitle||("Episode "+(i+1));
+      const numGuess=parseInt((String(title).match(/\d+/)||[])[0]);
+      return {
+        title,
+        episode:e.episode_index||e.episode||(i+1),
+        videoId:e.videoId||null,
+        thumbnail:e.thumbnail||(e.videoId?`https://i.ytimg.com/vi/${e.videoId}/hqdefault.jpg`:null),
+        url:e.url||null,
+        description:e.description||"",
+        n:e.n||e.season||(isNaN(numGuess)?(i+1):numGuess)
+      };
+    });
+  }));
+  return cat;
+}
+let CATALOG = normalizeCatalog(SAMPLE);
+let channel = () => CATALOG.channels[0];
+
+function thumbFor(ep){
+  if(ep.thumbnail) return ep.thumbnail;
+  if(ep.videoId) return `https://i.ytimg.com/vi/${ep.videoId}/hqdefault.jpg`;
+  return placeholder(ep.n, ep.title);
+}
+function linkFor(ep){
+  if(ep.url) return ep.url;
+  if(ep.videoId) return `https://www.youtube.com/watch?v=${ep.videoId}`;
+  // sample fallback: search the official channel for this title
+  return "https://www.youtube.com/@Numberblocks/search?query="+encodeURIComponent(ep.title);
+}
+function deepLink(ep){
+  if(ep.videoId) return `intent://www.youtube.com/watch?v=${ep.videoId}#Intent;package=com.google.android.youtube.tv;scheme=https;end`;
+  return "(real video ID needed — appears after scraping)";
+}
+
+/* ---------------- TV PREVIEW RENDER ---------------- */
+function renderTV(){
+  const ch=channel();
+  document.getElementById("homeTitle").textContent=ch.title;
+  const rows=document.getElementById("rows"); rows.innerHTML="";
+  ch.collections.forEach((col,ci)=>{
+    const row=document.createElement("div"); row.className="row";
+    row.innerHTML=`<h3>${col.title} <span class="pill">${col.episodes.length} episodes</span></h3>`;
+    const strip=document.createElement("div"); strip.className="tiles";
+    col.episodes.forEach((ep,ei)=>{
+      const tile=document.createElement("div");
+      tile.className="tile"; tile.tabIndex=(ci===0&&ei===0)?0:-1;
+      tile.dataset.r=ci; tile.dataset.c=ei;
+      tile.innerHTML=`<img class="thumb" src="${thumbFor(ep)}" alt="" loading="lazy"
+          onerror="this.src='${placeholder(ep.n,ep.title)}'">
+        <div class="meta"><div class="ep">EP ${ep.episode}</div>
+        <div class="t">${ep.title}</div></div>`;
+      tile.addEventListener("click",()=>openModal(ep,col));
+      tile.addEventListener("keydown",e=>onTileKey(e,ci,ei));
+      strip.appendChild(tile);
+    });
+    row.appendChild(strip); rows.appendChild(row);
+  });
+}
+function tileAt(r,c){return document.querySelector(`.tile[data-r="${r}"][data-c="${c}"]`);}
+function focusTile(t){if(!t)return;
+  document.querySelectorAll(".tile").forEach(x=>x.tabIndex=-1);
+  t.tabIndex=0; t.focus(); t.scrollIntoView({block:"nearest",inline:"center"});}
+function onTileKey(e,r,c){
+  const ch=channel(); const rows=ch.collections;
+  if(e.key==="ArrowRight"){e.preventDefault();focusTile(tileAt(r,c+1)||tileAt(r,c));}
+  else if(e.key==="ArrowLeft"){e.preventDefault();focusTile(tileAt(r,c-1)||tileAt(r,c));}
+  else if(e.key==="ArrowDown"){e.preventDefault();
+    const nc=Math.min(c,(rows[r+1]?.episodes.length||1)-1);focusTile(tileAt(r+1,nc));}
+  else if(e.key==="ArrowUp"){e.preventDefault();
+    const nc=Math.min(c,(rows[r-1]?.episodes.length||1)-1);focusTile(tileAt(r-1,nc));}
+  else if(e.key==="Enter"){e.preventDefault();openModal(rows[r].episodes[c],rows[r]);}
+}
+
+/* ---------------- MODAL ---------------- */
+let current=null;
+function openModal(ep,col){
+  current=ep;
+  document.getElementById("mImg").src=thumbFor(ep);
+  document.getElementById("mEp").textContent=`${col.title} · EP ${ep.episode}`;
+  document.getElementById("mTitle").textContent=ep.title;
+  document.getElementById("mDesc").textContent=ep.description||"A Numberblocks episode.";
+  document.getElementById("mLink").textContent=deepLink(ep);
+  document.getElementById("modalBg").classList.add("show");
+  document.getElementById("mPlay").focus();
+}
+function closeModal(){document.getElementById("modalBg").classList.remove("show");}
+document.getElementById("mClose").onclick=closeModal;
+document.getElementById("mPlay").onclick=()=>window.open(linkFor(current),"_blank");
+document.getElementById("modalBg").addEventListener("click",e=>{
+  if(e.target.id==="modalBg")closeModal();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal();});
+
+/* ---------------- DATA CHECK RENDER ---------------- */
+function renderData(){
+  const ch=channel();
+  const cols=ch.collections;
+  const total=cols.reduce((a,c)=>a+c.episodes.length,0);
+  const withId=cols.reduce((a,c)=>a+c.episodes.filter(e=>e.videoId).length,0);
+  const cards=document.getElementById("cards");
+  cards.innerHTML=`
+    <div class="card"><div class="n">${cols.length}</div><div class="l">Collections</div></div>
+    <div class="card"><div class="n">${total}</div><div class="l">Episodes</div></div>
+    <div class="card"><div class="n">${withId}</div><div class="l">With real video ID</div></div>
+    <div class="card"><div class="n">${total-withId}</div><div class="l">Missing video ID</div></div>`;
+  const tables=document.getElementById("tables"); tables.innerHTML="";
+  cols.forEach(col=>{
+    const h=document.createElement("div"); h.className="colhdr";
+    h.textContent=`${col.title}  (${col.episodes.length})`; tables.appendChild(h);
+    const t=document.createElement("table");
+    t.innerHTML=`<thead><tr><th>#</th><th>Thumb</th><th>Title</th><th>Video ID</th><th>Link</th></tr></thead>`;
+    const tb=document.createElement("tbody");
+    col.episodes.forEach(ep=>{
+      const tr=document.createElement("tr");
+      tr.innerHTML=`<td>${ep.episode}</td>
+        <td><img class="mini" src="${thumbFor(ep)}" onerror="this.src='${placeholder(ep.n,ep.title)}'"></td>
+        <td>${ep.title}</td>
+        <td class="id">${ep.videoId?ep.videoId:'<span class="miss">— (from scraper)</span>'}</td>
+        <td><a href="${linkFor(ep)}" target="_blank">open ↗</a></td>`;
+      tb.appendChild(tr);
+    });
+    t.appendChild(tb); tables.appendChild(t);
+  });
+  const st=document.getElementById("status");
+  if(CATALOG.sample){st.className="status sample";
+    st.innerHTML="⚠ Sample data — run build_catalog.py, then load catalog.json to verify the real episodes.";}
+  else{st.className="status real";
+    st.innerHTML=`✔ Loaded real catalog.json — ${withId}/${total} episodes have video IDs and will deep-link.`;}
+}
+
+/* ---------------- TABS + LOADER ---------------- */
+document.querySelectorAll(".tab").forEach(tab=>{
+  tab.onclick=()=>{
+    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+    document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+    tab.classList.add("active");
+    document.getElementById(tab.dataset.view).classList.add("active");
+  };
+});
+document.getElementById("loadBtn").onclick=()=>document.getElementById("file").click();
+document.getElementById("file").onchange=e=>{
+  const f=e.target.files[0]; if(!f)return;
+  const rd=new FileReader();
+  rd.onload=()=>{
+    try{
+      const j=JSON.parse(rd.result);
+      if(!j.channels||!j.channels.length) throw new Error("no channels[]");
+      CATALOG=normalizeCatalog(j); CATALOG.sample=false;
+      document.getElementById("src").textContent="showing: catalog.json";
+      renderAll();
+    }catch(err){alert("Could not read catalog.json:\n"+err.message);}
+  };
+  rd.readAsText(f);
+};
+
+function renderAll(){renderTV();renderData();}
+renderAll();
+</script>
+</body>
+</html>

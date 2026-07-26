@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Numberblocks TV</string>
+    <string name="browse_title">Numberblocks</string>
+    <string name="loading">Loading episode…</string>
+    <string name="error_playback">Sorry, this episode could not be played. Please try another.</string>
+</resources>
