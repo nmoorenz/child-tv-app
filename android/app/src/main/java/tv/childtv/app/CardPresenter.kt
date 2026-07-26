@@ -1,42 +1,60 @@
 package tv.childtv.app
 
+import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import androidx.leanback.widget.ImageCardView
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.leanback.widget.Presenter
 import com.bumptech.glide.Glide
 
 class CardPresenter : Presenter() {
 
+    class EpisodeViewHolder(view: View) : Presenter.ViewHolder(view) {
+        val image: ImageView = view.findViewById(R.id.card_image)
+        val title: TextView = view.findViewById(R.id.card_title)
+        val subtitle: TextView = view.findViewById(R.id.card_subtitle)
+        val progressFill: View = view.findViewById(R.id.progress_fill)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-        val cardView = ImageCardView(parent.context)
-        cardView.isFocusable = true
-        cardView.isFocusableInTouchMode = true
-        cardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT)
-        return ViewHolder(cardView)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.card_episode, parent, false)
+        return EpisodeViewHolder(view)
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, item: Any) {
         val ep = item as Episode
-        val cardView = viewHolder.view as ImageCardView
-        cardView.titleText = ep.name
-        cardView.contentText = if (ep.episode > 0) "Episode ${ep.episode}" else ""
+        val holder = viewHolder as EpisodeViewHolder
+        val context = holder.view.context
+
+        holder.title.text = ep.name
+        holder.subtitle.text = if (ep.episode > 0) "Episode ${ep.episode}" else ""
+
         val thumb = ep.thumbnail
             ?: ep.videoId?.let { "https://i.ytimg.com/vi/$it/hqdefault.jpg" }
-        Glide.with(cardView.context)
+        Glide.with(context)
             .load(thumb)
             .placeholder(R.drawable.default_thumb)
             .error(R.drawable.default_thumb)
             .centerCrop()
-            .into(cardView.mainImageView)
+            .into(holder.image)
+
+        val fraction = ep.videoId?.let { ProgressStore.fraction(context, it) } ?: 0f
+        val density = context.resources.displayMetrics.density
+        val fillPx = (fraction * CARD_WIDTH_DP * density).toInt()
+        val lp = holder.progressFill.layoutParams
+        lp.width = fillPx
+        holder.progressFill.layoutParams = lp
+        holder.progressFill.visibility = if (fraction > 0f) View.VISIBLE else View.GONE
     }
 
     override fun onUnbindViewHolder(viewHolder: ViewHolder) {
-        val cardView = viewHolder.view as ImageCardView
-        cardView.mainImage = null
+        val holder = viewHolder as EpisodeViewHolder
+        Glide.with(holder.view.context).clear(holder.image)
     }
 
     companion object {
-        private const val CARD_WIDTH = 320
-        private const val CARD_HEIGHT = 180
+        private const val CARD_WIDTH_DP = 320
     }
 }

@@ -99,11 +99,13 @@ pull every playlist on the channel instead, set `"playlists": "auto"` there.
 
 ## How playback works on the TV (Phase 2)
 
-Selecting an episode plays it **inside the app** using NewPipeExtractor (to fetch
-the video stream) and ExoPlayer (to play it) — the same technique NewPipe and
-SmartTube use. There's no YouTube app, no ads, no recommendations, and no
-end-screen cards; your child only ever sees your grid. When an episode ends, or
-Back is pressed, it returns to the grid.
+Selecting an episode plays it **inside the app** using YouTube's official player
+(the IFrame player) embedded in a WebView. There's only the video on screen — no
+YouTube browsing UI, so your child can't wander off. When an episode ends (or Back
+is pressed) the app returns to the grid, which also skips the "up next" screen.
+
+Tiles show a **progress bar**: a red bar along the bottom of each thumbnail marks
+how far that episode has been watched, and playback resumes where it left off.
 
 ## Adding more channels later
 
@@ -140,13 +142,14 @@ Until you commit a scraped `catalog.json`, the app ships with a small **placehol
 (a few real Season 1 episodes at `android/app/src/main/assets/catalog.json`) so it
 always builds and you can test playback right away.
 
-### Honest caveat (the SmartTube/NewPipe trade-off)
+### Honest caveats
 
-Because playback extracts the stream directly — the only way to avoid ads and
-recommendations — it relies on YouTube's internals. When YouTube changes those,
-extraction can break until the `NewPipeExtractor` version in
-`android/app/build.gradle.kts` is bumped and the app rebuilt. That's the normal
-maintenance cost of this approach, usually a one-line version change.
+Because it uses YouTube's official embedded player, two things are outside our
+control: **ads can still play** (YouTube serves them through embeds; for kids'
+content they're limited but not zero), and a small number of episodes have
+**embedding disabled** by the uploader. For those, the app automatically opens
+that one episode in the YouTube app instead. This approach is far more reliable
+than stream extraction and needs no ongoing maintenance.
 
 ### Local build (optional)
 

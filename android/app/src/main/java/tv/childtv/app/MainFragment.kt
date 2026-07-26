@@ -13,6 +13,8 @@ import androidx.leanback.widget.OnItemViewClickedListener
 
 class MainFragment : BrowseSupportFragment() {
 
+    private val cardAdapters = ArrayList<ArrayObjectAdapter>()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -38,14 +40,22 @@ class MainFragment : BrowseSupportFragment() {
 
     private fun setupRows() {
         val rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
+        cardAdapters.clear()
         val catalog = CatalogRepository.load(requireContext())
         val channel = catalog.channels.firstOrNull()
         channel?.collections?.forEachIndexed { index, season ->
             val cardAdapter = ArrayObjectAdapter(CardPresenter())
             season.episodes.forEach { cardAdapter.add(it) }
+            cardAdapters.add(cardAdapter)
             val header = HeaderItem(index.toLong(), season.title)
             rowsAdapter.add(ListRow(header, cardAdapter))
         }
         adapter = rowsAdapter
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Refresh progress bars after returning from playback.
+        cardAdapters.forEach { it.notifyArrayItemRangeChanged(0, it.size()) }
     }
 }
