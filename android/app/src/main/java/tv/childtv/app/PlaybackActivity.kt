@@ -6,9 +6,12 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import android.webkit.ConsoleMessage
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.TextView
@@ -30,6 +33,16 @@ class PlaybackActivity : FragmentActivity() {
     private var duration = 0
     private var finished = false
     private var ready = false
+    private var sawActivity = false
+
+    private fun showDebug(msg: String) {
+        runOnUiThread {
+            if (!ready) {
+                statusText.visibility = View.VISIBLE
+                statusText.text = msg
+            }
+        }
+    }
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,19 +70,41 @@ class PlaybackActivity : FragmentActivity() {
         CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true)
 
         // A WebChromeClient is REQUIRED for the YouTube IFrame player to initialise
-        // and play video inside a WebView. A WebViewClient keeps navigation in-app.
-        webView.webChromeClient = WebChromeClient()
-        webView.webViewClient = WebViewClient()
+        // inside a WebView. Both clients also surface diagnostics on screen since we
+        // can't read TV logs.
+        webView.webChromeClient = object : WebChromeClient() {
+            override fun onConsoleMessage(message: ConsoleMessage): Boolean {
+                sawActivity = true
+                showDebug("JS: ${message.message()} (line ${message.lineNumber()})")
+                return true
+            }
+        }
+        webView.webViewClient = object : WebViewClient() {
+            override fun onPageFinished(view: WebView?, url: String?) {
+                sawActivity = true
+                showDebug("Page loaded — starting player…")
+            }
+
+            override fun onReceivedError(
+                view: WebView?,
+                request: WebResourceRequest?,
+                error: WebResourceError?
+            ) {
+                if (request?.isForMainFrame == true) {
+                    sawActivity = true
+                    showDebug("Couldn't load player page: ${error?.description}")
+                }
+            }
+        }
 
         webView.addJavascriptInterface(Bridge(), "AndroidBridge")
 
         val start = ProgressStore.resumeSeconds(this, id)
         webView.loadUrl("$PLAYER_PAGE_URL?v=$id&t=$start")
 
-        // If the player hasn't reported ready after a while, show a hint.
         Handler(Looper.getMainLooper()).postDelayed({
-            if (!ready && !finished) {
-                statusText.text = "Still loading… check the TV's internet connection."
+            if (!ready && !finished && !sawActivity) {
+                showDebug("No response — the TV's web view may be blocked or outdated.")
             }
         }, 12000)
     }
