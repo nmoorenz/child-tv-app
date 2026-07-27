@@ -49,6 +49,5 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.8.2")
     implementation("androidx.leanback:leanback:1.0.0")
     implementation("com.github.bumptech.glide:glide:4.16.0")
-    // Reliable in-app YouTube playback (handles the WebView/embedding context).
-    implementation("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0")
+    // Playback = framework WebView loading your hosted kidstv-player.html (no extra deps).
 }

@@ -1,33 +1,36 @@
 package tv.childtv.app
 
+import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.webkit.CookieManager
+import android.webkit.JavascriptInterface
+import android.webkit.WebView
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFramePlayerOptions
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 
 /**
- * Plays an episode in-app with the android-youtube-player library (YouTube's
- * official IFrame player, wrapped to work reliably inside a WebView). Reports
- * progress for the tile progress bars, closes on end (skipping the "up next"
- * screen), and if a video errors it falls back to opening it in the YouTube app.
+ * Plays an episode by loading a REAL hosted player page (kidstv-player.html on
+ * your website) in a WebView. Loading a real https page — rather than faking the
+ * page locally — gives YouTube the genuine origin/referrer that these videos
+ * require (they play in a browser but reject the local-data WebView context).
+ *
+ * >>> Set PLAYER_PAGE_URL below to where you host kidstv-player.html. <<<
  */
 class PlaybackActivity : FragmentActivity() {
 
-    private lateinit var playerView: YouTubePlayerView
+    private lateinit var webView: WebView
     private lateinit var statusText: TextView
     private var videoId: String? = null
-    private var durationSeconds: Float = 0f
+    private var duration = 0
     private var finished = false
 
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_playback)
-        playerView = findViewById(R.id.youtube_player_view)
+        webView = findViewById(R.id.web_view)
         statusText = findViewById(R.id.status_text)
 
         val id = intent.getStringExtra(EXTRA_VIDEO_ID)
@@ -36,49 +39,57 @@ class PlaybackActivity : FragmentActivity() {
             return
         }
         videoId = id
-        lifecycle.addObserver(playerView)
 
-        val startSeconds = ProgressStore.resumeSeconds(this, id).toFloat()
-        val options = IFramePlayerOptions.Builder().controls(1).rel(0).build()
+        webView.setBackgroundColor(Color.BLACK)
+        webView.settings.apply {
+            javaScriptEnabled = true
+            domStorageEnabled = true
+            mediaPlaybackRequiresUserGesture = false
+            // Present as a normal browser (drop the WebView "; wv" marker).
+            userAgentString = BROWSER_UA
+        }
+        CookieManager.getInstance().setAcceptCookie(true)
+        CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true)
 
-        playerView.initialize(object : AbstractYouTubePlayerListener() {
-            override fun onReady(youTubePlayer: YouTubePlayer) {
-                statusText.visibility = View.GONE
-                youTubePlayer.loadVideo(id, startSeconds)
+        webView.addJavascriptInterface(Bridge(), "AndroidBridge")
+
+        val start = ProgressStore.resumeSeconds(this, id)
+        webView.loadUrl("$PLAYER_PAGE_URL?v=$id&t=$start")
+    }
+
+    private inner class Bridge {
+        @JavascriptInterface
+        fun onReady() {
+            runOnUiThread { statusText.visibility = View.GONE }
+        }
+
+        @JavascriptInterface
+        fun onState(state: Int) {
+            if (state == 0) { // ENDED
+                videoId?.let { ProgressStore.markWatched(this@PlaybackActivity, it) }
+                runOnUiThread { closeOnce() }
             }
+        }
 
-            override fun onVideoDuration(youTubePlayer: YouTubePlayer, duration: Float) {
-                durationSeconds = duration
+        @JavascriptInterface
+        fun onProgress(currentSeconds: Int, durationSeconds: Int) {
+            val id = videoId ?: return
+            if (durationSeconds > 0) {
+                duration = durationSeconds
+                ProgressStore.save(
+                    this@PlaybackActivity, id,
+                    currentSeconds * 1000L, durationSeconds * 1000L
+                )
             }
+        }
 
-            override fun onCurrentSecond(youTubePlayer: YouTubePlayer, second: Float) {
-                if (durationSeconds > 0f) {
-                    ProgressStore.save(
-                        this@PlaybackActivity, id,
-                        (second * 1000).toLong(), (durationSeconds * 1000).toLong()
-                    )
-                }
-            }
-
-            override fun onStateChange(
-                youTubePlayer: YouTubePlayer,
-                state: PlayerConstants.PlayerState
-            ) {
-                if (state == PlayerConstants.PlayerState.ENDED) {
-                    ProgressStore.markWatched(this@PlaybackActivity, id)
-                    closeOnce()
-                }
-            }
-
-            override fun onError(
-                youTubePlayer: YouTubePlayer,
-                error: PlayerConstants.PlayerError
-            ) {
-                // No YouTube fallback: show the error so we can see what happened.
-                statusText.text = getString(R.string.error_playback) + " (" + error + ")"
+        @JavascriptInterface
+        fun onError(code: Int) {
+            runOnUiThread {
+                statusText.text = getString(R.string.error_playback) + " (" + code + ")"
                 statusText.visibility = View.VISIBLE
             }
-        }, options)
+        }
     }
 
     private fun closeOnce() {
@@ -88,8 +99,27 @@ class PlaybackActivity : FragmentActivity() {
         }
     }
 
+    override fun onDestroy() {
+        try {
+            webView.loadUrl("about:blank")
+            webView.destroy()
+        } catch (_: Exception) {
+        }
+        super.onDestroy()
+    }
+
     companion object {
         const val EXTRA_VIDEO_ID = "videoId"
         const val EXTRA_TITLE = "title"
+
+        // ======================================================================
+        // SET THIS to where you host kidstv-player.html (must be https).
+        // e.g. "https://www.example.com/kidstv-player.html"
+        // ======================================================================
+        const val PLAYER_PAGE_URL = "https://www.nmoore.nz/kidstv-player.html"
+
+        private const val BROWSER_UA =
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
+                "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
     }
 }

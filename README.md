@@ -99,16 +99,26 @@ pull every playlist on the channel instead, set `"playlists": "auto"` there.
 
 ## How playback works on the TV (Phase 2)
 
-Selecting an episode plays it **inside the app** using YouTube's official IFrame
-player, via the well-tested `android-youtube-player` library (which handles the
-WebView embedding context reliably). There's only the video on screen — no YouTube
-browsing UI, so your child can't wander off. When an episode ends (or Back is
-pressed) the app returns to the grid, which also skips the "up next" screen. If a
-video can't be played in the embedded player, the app shows an on-screen message
-(there is intentionally no YouTube-app fallback).
+Selecting an episode plays it **inside the app** in a WebView that loads a small
+player page (`kidstv-player.html`) **hosted on your own website**. This matters:
+these videos play in a real browser/website but reject a "faked" local player
+inside an app, so the app loads a genuine hosted page to get the real origin they
+require. Only the video shows — no YouTube browsing UI. When an episode ends (or
+Back is pressed) the app returns to the grid, skipping the "up next" screen. If a
+video still can't play, the app shows an on-screen message (no YouTube-app fallback,
+by design).
 
 The menu also has a **Channels** row at the top (currently just Numberblocks, with
 a placeholder for more) above the season list.
+
+### Required one-time setup for playback
+
+1. Host `kidstv-player.html` (in this folder) on your website. For Hugo/blogdown,
+   drop it in your site's `static/` folder — it will be served at
+   `https://YOUR-SITE/kidstv-player.html`. (You can open that URL with
+   `?v=SOME_VIDEO_ID` in a browser to confirm it plays.)
+2. In `android/app/src/main/java/tv/childtv/app/PlaybackActivity.kt`, set
+   `PLAYER_PAGE_URL` to that exact URL. Then push/rebuild.
 
 Tiles show a **progress bar**: a red bar along the bottom of each thumbnail marks
 how far that episode has been watched, and playback resumes where it left off.
