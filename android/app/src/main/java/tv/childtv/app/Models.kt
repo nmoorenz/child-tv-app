@@ -24,3 +24,6 @@ data class Channel(
 )
 
 data class Catalog(val channels: List<Channel>)
+
+/** An item in the top "Channels" selector row. */
+data class ChannelItem(val id: String, val title: String, val enabled: Boolean)

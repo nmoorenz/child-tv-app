@@ -99,10 +99,16 @@ pull every playlist on the channel instead, set `"playlists": "auto"` there.
 
 ## How playback works on the TV (Phase 2)
 
-Selecting an episode plays it **inside the app** using YouTube's official player
-(the IFrame player) embedded in a WebView. There's only the video on screen — no
-YouTube browsing UI, so your child can't wander off. When an episode ends (or Back
-is pressed) the app returns to the grid, which also skips the "up next" screen.
+Selecting an episode plays it **inside the app** using YouTube's official IFrame
+player, via the well-tested `android-youtube-player` library (which handles the
+WebView embedding context reliably). There's only the video on screen — no YouTube
+browsing UI, so your child can't wander off. When an episode ends (or Back is
+pressed) the app returns to the grid, which also skips the "up next" screen. If a
+video can't be played in the embedded player, the app shows an on-screen message
+(there is intentionally no YouTube-app fallback).
+
+The menu also has a **Channels** row at the top (currently just Numberblocks, with
+a placeholder for more) above the season list.
 
 Tiles show a **progress bar**: a red bar along the bottom of each thumbnail marks
 how far that episode has been watched, and playback resumes where it left off.
@@ -146,10 +152,10 @@ always builds and you can test playback right away.
 
 Because it uses YouTube's official embedded player, two things are outside our
 control: **ads can still play** (YouTube serves them through embeds; for kids'
-content they're limited but not zero), and a small number of episodes have
-**embedding disabled** by the uploader. For those, the app automatically opens
-that one episode in the YouTube app instead. This approach is far more reliable
-than stream extraction and needs no ongoing maintenance.
+content they're limited but not zero), and if any episode has **embedding disabled**
+by the uploader it will show an on-screen error rather than playing (there is no
+YouTube-app fallback, by design). This approach is far more reliable than stream
+extraction and needs no ongoing maintenance.
 
 ### Local build (optional)
 

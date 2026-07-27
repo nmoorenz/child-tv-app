@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Numberblocks TV</string>
-    <string name="browse_title">Numberblocks</string>
+    <string name="app_name">Kids TV</string>
+    <string name="browse_title">Kids TV</string>
+    <string name="channels_row">Channels</string>
+    <string name="channel_coming_soon">More channels coming soon</string>
     <string name="loading">Loading episode…</string>
     <string name="error_playback">Sorry, this episode could not be played. Please try another.</string>
 </resources>
