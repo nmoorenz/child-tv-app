@@ -3,10 +3,14 @@ package tv.childtv.app
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
+import android.webkit.WebChromeClient
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 
@@ -25,6 +29,7 @@ class PlaybackActivity : FragmentActivity() {
     private var videoId: String? = null
     private var duration = 0
     private var finished = false
+    private var ready = false
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,16 +56,31 @@ class PlaybackActivity : FragmentActivity() {
         CookieManager.getInstance().setAcceptCookie(true)
         CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true)
 
+        // A WebChromeClient is REQUIRED for the YouTube IFrame player to initialise
+        // and play video inside a WebView. A WebViewClient keeps navigation in-app.
+        webView.webChromeClient = WebChromeClient()
+        webView.webViewClient = WebViewClient()
+
         webView.addJavascriptInterface(Bridge(), "AndroidBridge")
 
         val start = ProgressStore.resumeSeconds(this, id)
         webView.loadUrl("$PLAYER_PAGE_URL?v=$id&t=$start")
+
+        // If the player hasn't reported ready after a while, show a hint.
+        Handler(Looper.getMainLooper()).postDelayed({
+            if (!ready && !finished) {
+                statusText.text = "Still loading… check the TV's internet connection."
+            }
+        }, 12000)
     }
 
     private inner class Bridge {
         @JavascriptInterface
         fun onReady() {
-            runOnUiThread { statusText.visibility = View.GONE }
+            runOnUiThread {
+                ready = true
+                statusText.visibility = View.GONE
+            }
         }
 
         @JavascriptInterface
