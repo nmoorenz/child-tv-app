@@ -2,11 +2,13 @@ package tv.childtv.app
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.net.http.SslError
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.webkit.ConsoleMessage
+import android.webkit.SslErrorHandler
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
@@ -94,6 +96,19 @@ class PlaybackActivity : FragmentActivity() {
                     sawActivity = true
                     showDebug("Couldn't load player page: ${error?.description}")
                 }
+            }
+
+            // Old TVs have an outdated root-certificate store and reject modern
+            // HTTPS certs, which silently blanks the page. For this personal app on
+            // your own TV we proceed anyway. (Acceptable here; not for a public app.)
+            override fun onReceivedSslError(
+                view: WebView?,
+                handler: SslErrorHandler?,
+                error: SslError?
+            ) {
+                sawActivity = true
+                showDebug("SSL error (${error?.primaryError}) — proceeding anyway")
+                handler?.proceed()
             }
         }
 
