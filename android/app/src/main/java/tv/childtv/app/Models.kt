@@ -6,7 +6,8 @@ data class Episode(
     val episode: Int,
     val videoId: String?,
     val thumbnail: String?,
-    val url: String?
+    val url: String?,
+    val subtitle: String?
 )
 
 data class Season(
@@ -20,6 +21,7 @@ data class Channel(
     val id: String,
     val title: String,
     val color: String?,
+    val layout: String?,          // "grid" (Kid Crew) or null (seasons/rows)
     val collections: List<Season>
 )
 

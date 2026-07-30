@@ -9,8 +9,8 @@
     android:padding="4dp">
 
     <FrameLayout
-        android:layout_width="320dp"
-        android:layout_height="180dp">
+        android:layout_width="380dp"
+        android:layout_height="214dp">
 
         <ImageView
             android:id="@+id/card_image"
@@ -37,7 +37,7 @@
 
     <TextView
         android:id="@+id/card_title"
-        android:layout_width="320dp"
+        android:layout_width="380dp"
         android:layout_height="wrap_content"
         android:maxLines="2"
         android:ellipsize="end"
@@ -45,11 +45,11 @@
         android:paddingTop="6dp"
         android:paddingEnd="2dp"
         android:textColor="#FFFFFF"
-        android:textSize="14sp" />
+        android:textSize="15sp" />
 
     <TextView
         android:id="@+id/card_subtitle"
-        android:layout_width="320dp"
+        android:layout_width="380dp"
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:paddingStart="2dp"

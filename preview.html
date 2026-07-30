@@ -27,6 +27,13 @@
     padding:9px 14px;border-radius:10px;cursor:pointer;font-size:13px}
   .btn:hover{border-color:#5b6cc4}
   .note{font-size:12px;color:var(--muted)}
+  .chbar{display:flex;gap:10px;align-items:center;padding:12px 34px;flex-wrap:wrap;
+    background:#12162a;border-bottom:1px solid #232a44;position:sticky;top:57px;z-index:19}
+  .chbar .lbl{font-size:12px;color:var(--muted);font-weight:700;
+    text-transform:uppercase;letter-spacing:.5px;margin-right:2px}
+  .chpill{background:var(--panel);border:1px solid #2b3350;color:var(--ink);
+    padding:8px 16px;border-radius:999px;cursor:pointer;font-size:14px;font-weight:700}
+  .chpill.active{background:var(--accent);border-color:var(--accent)}
   main{padding:0}
   .view{display:none}
   .view.active{display:block}
@@ -56,6 +63,12 @@
     display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:36px}
   .tile:focus,.tile.focus{border-color:var(--focus);transform:scale(1.06);
     box-shadow:0 10px 30px rgba(0,0,0,.5)}
+  /* grid layout (e.g. Kid Crew): wrapping, wider cards, with dates */
+  .grid-tiles{display:flex;flex-wrap:wrap;gap:18px;padding:8px 4px 14px}
+  .tile.wide{width:300px}
+  .tile.wide .thumb{height:169px}
+  .tile.wide .t{font-size:15px;min-height:40px}
+  .tile .date{font-size:12px;color:var(--muted);margin-top:6px;font-weight:600}
 
   /* ---------- MODAL ---------- */
   .modal-bg{position:fixed;inset:0;background:rgba(6,8,16,.72);display:none;
@@ -96,7 +109,7 @@
 </head>
 <body>
 <header>
-  <div class="brand">Numberblocks TV <small>preview &amp; data check</small></div>
+  <div class="brand">Kids TV <small>preview &amp; data check</small></div>
   <div class="tabs">
     <button class="tab active" data-view="tv">📺 TV App Preview</button>
     <button class="tab" data-view="data">✅ Data Check</button>
@@ -106,6 +119,8 @@
   <button class="btn" id="loadBtn">Load catalog.json…</button>
   <input type="file" id="file" accept=".json" style="display:none">
 </header>
+
+<div id="channelBar" class="chbar"></div>
 
 <main>
   <!-- TV APP PREVIEW -->
@@ -205,6 +220,21 @@ const SAMPLE = {
         {episode:2,title:"Episode 2",n:10},
       ]},
     ]
+  },
+  {
+    id:"kidcrew", title:"Kid Crew", color:"#00a3e0", layout:"grid",
+    collections:[
+      { id:"latest", title:"Kid Crew", color:"#00a3e0", episodes:[
+        {title:"Kid Crew — Fun Song for Kids to Sing Along (sample)", date:"18 Jul 2025"},
+        {title:"Kid Crew — Story Time: The Little Red Hen (sample)", date:"11 Jul 2025"},
+        {title:"Kid Crew — Learning Colours with Paint (sample)", date:"4 Jul 2025"},
+        {title:"Kid Crew — Playground Adventure Day Out (sample)", date:"27 Jun 2025"},
+        {title:"Kid Crew — Counting Game: How Many Apples? (sample)", date:"20 Jun 2025"},
+        {title:"Kid Crew — Animal Sounds Around the Farm (sample)", date:"13 Jun 2025"},
+        {title:"Kid Crew — Bath Time Bubbles Song (sample)", date:"6 Jun 2025"},
+        {title:"Kid Crew — Building a Blanket Fort (sample)", date:"30 May 2025"},
+      ]},
+    ]
   }]
 };
 
@@ -241,11 +271,12 @@ function normalizeCatalog(cat){
       const numGuess=parseInt((String(title).match(/\d+/)||[])[0]);
       return {
         title,
-        episode:e.episode_index||e.episode||(i+1),
+        episode:e.episode_index||e.episode||0,
         videoId:e.videoId||null,
         thumbnail:e.thumbnail||(e.videoId?`https://i.ytimg.com/vi/${e.videoId}/hqdefault.jpg`:null),
         url:e.url||null,
         description:e.description||"",
+        subtitle:e.subtitle||e.date||"",
         n:e.n||e.season||(isNaN(numGuess)?(i+1):numGuess)
       };
     });
@@ -253,7 +284,21 @@ function normalizeCatalog(cat){
   return cat;
 }
 let CATALOG = normalizeCatalog(SAMPLE);
-let channel = () => CATALOG.channels[0];
+let currentChannel = 0;
+let channel = () => CATALOG.channels[currentChannel] || CATALOG.channels[0];
+
+function renderChannelBar(){
+  const bar=document.getElementById("channelBar");
+  const chs=CATALOG.channels||[];
+  bar.innerHTML=`<span class="lbl">Channels</span>`;
+  chs.forEach((ch,i)=>{
+    const b=document.createElement("button");
+    b.className="chpill"+(i===currentChannel?" active":"");
+    b.textContent=ch.title;
+    b.onclick=()=>{ currentChannel=i; renderAll(); };
+    bar.appendChild(b);
+  });
+}
 
 function thumbFor(ep){
   if(ep.thumbnail) return ep.thumbnail;
@@ -276,6 +321,7 @@ function renderTV(){
   const ch=channel();
   document.getElementById("homeTitle").textContent=ch.title;
   const rows=document.getElementById("rows"); rows.innerHTML="";
+  if(ch.layout==="grid"){ renderGrid(ch,rows); return; }
   ch.collections.forEach((col,ci)=>{
     const row=document.createElement("div"); row.className="row";
     row.innerHTML=`<h3>${col.title} <span class="pill">${col.episodes.length} episodes</span></h3>`;
@@ -286,7 +332,7 @@ function renderTV(){
       tile.dataset.r=ci; tile.dataset.c=ei;
       tile.innerHTML=`<img class="thumb" src="${thumbFor(ep)}" alt="" loading="lazy"
           onerror="this.src='${placeholder(ep.n,ep.title)}'">
-        <div class="meta"><div class="ep">EP ${ep.episode}</div>
+        <div class="meta">${ep.episode>0?`<div class="ep">EP ${ep.episode}</div>`:''}
         <div class="t">${ep.title}</div></div>`;
       tile.addEventListener("click",()=>openModal(ep,col));
       tile.addEventListener("keydown",e=>onTileKey(e,ci,ei));
@@ -294,6 +340,35 @@ function renderTV(){
     });
     row.appendChild(strip); rows.appendChild(row);
   });
+}
+/* grid layout render (Kid Crew): wrapping wide cards with dates, 2-D nav */
+function renderGrid(ch, rows){
+  const items=[];
+  ch.collections.forEach(col=>col.episodes.forEach(ep=>items.push({ep,col})));
+  const wrap=document.createElement("div"); wrap.className="grid-tiles";
+  items.forEach((it,i)=>{
+    const {ep,col}=it;
+    const tile=document.createElement("div");
+    tile.className="tile wide"; tile.tabIndex=i===0?0:-1; tile.dataset.i=i;
+    tile.innerHTML=`<img class="thumb" src="${thumbFor(ep)}" alt="" loading="lazy"
+        onerror="this.src='${placeholder(ep.n,ep.title)}'">
+      <div class="meta"><div class="t">${ep.title}</div>
+      ${ep.subtitle?`<div class="date">${ep.subtitle}</div>`:''}</div>`;
+    tile.addEventListener("click",()=>openModal(ep,col));
+    tile.addEventListener("keydown",e=>onGridKey(e,i,wrap));
+    wrap.appendChild(tile);
+  });
+  rows.appendChild(wrap);
+}
+function gridCols(wrap){ return Math.max(1, Math.floor((wrap.clientWidth||1000)/318)); }
+function onGridKey(e,i,wrap){
+  const tiles=wrap.querySelectorAll(".tile"); const cols=gridCols(wrap); let t=null;
+  if(e.key==="ArrowRight"){e.preventDefault();t=tiles[i+1];}
+  else if(e.key==="ArrowLeft"){e.preventDefault();t=tiles[i-1];}
+  else if(e.key==="ArrowDown"){e.preventDefault();t=tiles[i+cols];}
+  else if(e.key==="ArrowUp"){e.preventDefault();t=tiles[i-cols];}
+  else if(e.key==="Enter"){e.preventDefault();tiles[i].click();return;}
+  if(t){tiles.forEach(x=>x.tabIndex=-1);t.tabIndex=0;t.focus();t.scrollIntoView({block:"nearest"});}
 }
 function tileAt(r,c){return document.querySelector(`.tile[data-r="${r}"][data-c="${c}"]`);}
 function focusTile(t){if(!t)return;
@@ -315,7 +390,7 @@ let current=null;
 function openModal(ep,col){
   current=ep;
   document.getElementById("mImg").src=thumbFor(ep);
-  document.getElementById("mEp").textContent=`${col.title} · EP ${ep.episode}`;
+  document.getElementById("mEp").textContent=`${col.title}${ep.episode>0?' · EP '+ep.episode:''}`;
   document.getElementById("mTitle").textContent=ep.title;
   document.getElementById("mDesc").textContent=ep.description||"A Numberblocks episode.";
   document.getElementById("mLink").textContent=deepLink(ep);
@@ -348,9 +423,9 @@ function renderData(){
     const t=document.createElement("table");
     t.innerHTML=`<thead><tr><th>#</th><th>Thumb</th><th>Title</th><th>Video ID</th><th>Link</th></tr></thead>`;
     const tb=document.createElement("tbody");
-    col.episodes.forEach(ep=>{
+    col.episodes.forEach((ep,idx)=>{
       const tr=document.createElement("tr");
-      tr.innerHTML=`<td>${ep.episode}</td>
+      tr.innerHTML=`<td>${ep.episode>0?ep.episode:idx+1}</td>
         <td><img class="mini" src="${thumbFor(ep)}" onerror="this.src='${placeholder(ep.n,ep.title)}'"></td>
         <td>${ep.title}</td>
         <td class="id">${ep.videoId?ep.videoId:'<span class="miss">— (from scraper)</span>'}</td>
@@ -384,6 +459,7 @@ document.getElementById("file").onchange=e=>{
       const j=JSON.parse(rd.result);
       if(!j.channels||!j.channels.length) throw new Error("no channels[]");
       CATALOG=normalizeCatalog(j); CATALOG.sample=false;
+      currentChannel=0;
       document.getElementById("src").textContent="showing: catalog.json";
       renderAll();
     }catch(err){alert("Could not read catalog.json:\n"+err.message);}
@@ -391,7 +467,7 @@ document.getElementById("file").onchange=e=>{
   rd.readAsText(f);
 };
 
-function renderAll(){renderTV();renderData();}
+function renderAll(){renderChannelBar();renderTV();renderData();}
 renderAll();
 </script>
 </body>

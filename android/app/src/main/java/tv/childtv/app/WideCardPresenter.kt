@@ -8,9 +8,10 @@ import android.widget.TextView
 import androidx.leanback.widget.Presenter
 import com.bumptech.glide.Glide
 
-class CardPresenter : Presenter() {
+/** Wider card used by grid-layout channels (e.g. Kid Crew): 2-line title + date. */
+class WideCardPresenter : Presenter() {
 
-    class EpisodeViewHolder(view: View) : Presenter.ViewHolder(view) {
+    class WideViewHolder(view: View) : Presenter.ViewHolder(view) {
         val image: ImageView = view.findViewById(R.id.card_image)
         val title: TextView = view.findViewById(R.id.card_title)
         val subtitle: TextView = view.findViewById(R.id.card_subtitle)
@@ -19,18 +20,17 @@ class CardPresenter : Presenter() {
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.card_episode, parent, false)
-        return EpisodeViewHolder(view)
+            .inflate(R.layout.card_wide, parent, false)
+        return WideViewHolder(view)
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, item: Any) {
         val ep = item as Episode
-        val holder = viewHolder as EpisodeViewHolder
+        val holder = viewHolder as WideViewHolder
         val context = holder.view.context
 
         holder.title.text = ep.name
-        holder.subtitle.text = ep.subtitle
-            ?: if (ep.episode > 0) "Episode ${ep.episode}" else ""
+        holder.subtitle.text = ep.subtitle ?: ""
 
         val thumb = ep.thumbnail
             ?: ep.videoId?.let { "https://i.ytimg.com/vi/$it/hqdefault.jpg" }
@@ -51,11 +51,11 @@ class CardPresenter : Presenter() {
     }
 
     override fun onUnbindViewHolder(viewHolder: ViewHolder) {
-        val holder = viewHolder as EpisodeViewHolder
+        val holder = viewHolder as WideViewHolder
         Glide.with(holder.view.context).clear(holder.image)
     }
 
     companion object {
-        private const val CARD_WIDTH_DP = 320
+        private const val CARD_WIDTH_DP = 380
     }
 }

@@ -33,6 +33,7 @@ ADD / CHANGE WHAT'S INCLUDED
   every playlist on the channel automatically.
 """
 
+import datetime
 import json
 import re
 import subprocess
@@ -74,7 +75,17 @@ CHANNELS = [
         # keywords used only when "playlists": "auto"
         "auto_keywords": ["season", "series", "full episode"],
     },
-    # Add another channel later by copying the block above.
+    {
+        "id": "kidcrew",
+        "title": "Kid Crew",
+        "url": "https://www.youtube.com/@KidCrew",
+        "color": "#00a3e0",
+        # Scrape the channel's Videos tab instead of playlists, newest first,
+        # and keep only videos shorter than max_duration_seconds (drops the long
+        # compilations). One collection, in reverse-chronological order.
+        "source": "videos",
+        "max_duration_seconds": 1800,  # 30 minutes
+    },
 ]
 
 MAX_VIDEOS_PER_PLAYLIST = 200
@@ -117,6 +128,82 @@ def ytdlp_json(base_cmd, url, extra=None):
 
 def thumb(vid):
     return f"https://i.ytimg.com/vi/{vid}/hqdefault.jpg"
+
+
+def hms(seconds):
+    if not seconds:
+        return ""
+    s = int(seconds)
+    h, rem = divmod(s, 3600)
+    m, sec = divmod(rem, 60)
+    return f"{h}:{m:02d}:{sec:02d}" if h else f"{m}:{sec:02d}"
+
+
+def fmt_date(yyyymmdd):
+    """'20250712' -> '12 Jul 2025' (cross-platform)."""
+    s = str(yyyymmdd or "")
+    if len(s) != 8 or not s.isdigit():
+        return ""
+    try:
+        dt = datetime.datetime.strptime(s, "%Y%m%d")
+        return f"{dt.day} {dt.strftime('%b %Y')}"
+    except ValueError:
+        return ""
+
+
+def epoch_to_date(ts):
+    """Unix timestamp -> '12 Jul 2025'. The fast scrape returns dates this way."""
+    try:
+        if not ts:
+            return ""
+        dt = datetime.datetime.utcfromtimestamp(int(ts))
+        return f"{dt.day} {dt.strftime('%b %Y')}"
+    except (ValueError, TypeError, OSError):
+        return ""
+
+
+def video_date(entry):
+    return (fmt_date(entry.get("upload_date"))
+            or epoch_to_date(entry.get("timestamp"))
+            or epoch_to_date(entry.get("release_timestamp")))
+
+
+def collect_videos(base_cmd, ch):
+    """Videos-tab mode: newest-first, keep only those under max_duration_seconds."""
+    url = ch["url"].rstrip("/") + "/videos"
+    max_dur = ch.get("max_duration_seconds", 1800)
+    print(f"  scraping Videos tab (keeping < {max_dur // 60} min)…")
+    # approximate_date makes the fast flat scrape include upload dates.
+    data = ytdlp_json(base_cmd, url, extra=[
+        "--playlist-end", "300",
+        "--extractor-args", "youtubetab:approximate_date",
+    ])
+    eps = []
+    for v in (data or {}).get("entries") or []:
+        if not v or not v.get("id"):
+            continue
+        title = v.get("title")
+        if not title:
+            continue
+        dur = v.get("duration")
+        if dur and dur > max_dur:
+            continue  # skip long compilations
+        eps.append({
+            "name": title,
+            "videoId": v["id"],
+            "thumbnail": thumb(v["id"]),
+            "url": f"https://www.youtube.com/watch?v={v['id']}",
+            "duration": int(dur) if dur else None,
+            "subtitle": video_date(v),  # date shown on the card
+        })
+    print(f"      {len(eps)} videos kept")
+    # Videos tab is already newest-first (reverse chronological).
+    return {
+        "id": "latest",
+        "title": ch["title"],
+        "color": ch.get("color"),
+        "episodes": eps,
+    }
 
 
 def parse_episode(raw_title):
@@ -180,6 +267,21 @@ def discover_playlists(base_cmd, ch):
 
 def build_channel(base_cmd, ch):
     print(f"\n== {ch['title']} ==")
+
+    if ch.get("source") == "videos":
+        collection = collect_videos(base_cmd, ch)
+        collections = [collection] if collection["episodes"] else []
+        total = len(collection["episodes"])
+        print(f"  => 1 collection, {total} videos")
+        return {
+            "id": ch["id"],
+            "title": ch["title"],
+            "youtubeChannelId": ch.get("youtubeChannelId"),
+            "color": ch.get("color", "#4a6cf7"),
+            "layout": "grid",  # wrapping grid of wider cards with dates
+            "collections": collections,
+        }
+
     pls = ch.get("playlists")
     if pls == "auto":
         pls = discover_playlists(base_cmd, ch)

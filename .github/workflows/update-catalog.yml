@@ -1,0 +1,40 @@
+name: Update catalog
+
+on:
+  schedule:
+    - cron: '0 16 * * *'   # daily ~ early morning New Zealand time
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install yt-dlp
+        run: pip install -U yt-dlp
+
+      - name: Refresh Kid Crew
+        run: python update_kidcrew.py
+
+      - name: Commit if the catalog changed
+        run: |
+          git config user.name "kidstv-bot"
+          git config user.email "actions@users.noreply.github.com"
+          if ! git diff --quiet -- catalog.json; then
+            git add catalog.json
+            git commit -m "Update catalog [skip ci]"
+            git push
+            echo "Catalog updated."
+          else
+            echo "No changes."
+          fi

@@ -2044,6 +2044,838 @@
           ]
         }
       ]
+    },
+    {
+      "id": "kidcrew",
+      "title": "Kid Crew",
+      "youtubeChannelId": null,
+      "color": "#00a3e0",
+      "layout": "grid",
+      "collections": [
+        {
+          "id": "latest",
+          "title": "Kid Crew",
+          "color": "#00a3e0",
+          "episodes": [
+            {
+              "name": "Camping in tent treehouse to escape storm after building it. Educational | Kid Crew",
+              "videoId": "YCk32nnZTd4",
+              "thumbnail": "https://i.ytimg.com/vi/YCk32nnZTd4/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=YCk32nnZTd4",
+              "duration": 689,
+              "subtitle": "27 Jul 2026"
+            },
+            {
+              "name": "Playing soccer with kids ride on cars and funny giant ball. Educational | Kid Crew",
+              "videoId": "BvajpVKSKqc",
+              "thumbnail": "https://i.ytimg.com/vi/BvajpVKSKqc/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=BvajpVKSKqc",
+              "duration": 736,
+              "subtitle": "16 Jul 2026"
+            },
+            {
+              "name": "Installing power lines with kids ride on crane truck, utility truck. Educational | Kid Crew",
+              "videoId": "bEd1ri7m0Ww",
+              "thumbnail": "https://i.ytimg.com/vi/bEd1ri7m0Ww/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=bEd1ri7m0Ww",
+              "duration": 946,
+              "subtitle": "30 Jun 2026"
+            },
+            {
+              "name": "Working on NASCAR Race Car, installing engine, and racing remote control cars Educational | Kid Crew",
+              "videoId": "cXuGuXq_IQk",
+              "thumbnail": "https://i.ytimg.com/vi/cXuGuXq_IQk/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=cXuGuXq_IQk",
+              "duration": 656,
+              "subtitle": "30 Jun 2026"
+            },
+            {
+              "name": "Planting forest with dirt drilling machine to dig, irrigation, and towing. Educational | Kid Crew",
+              "videoId": "k-WhUC8DOtQ",
+              "thumbnail": "https://i.ytimg.com/vi/k-WhUC8DOtQ/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=k-WhUC8DOtQ",
+              "duration": 908,
+              "subtitle": "30 May 2026"
+            },
+            {
+              "name": "Remote controlled truck mowing lawn and landscaping. Build and use with dad. Educational | Kid Crew",
+              "videoId": "AkHZ7-DmOQM",
+              "thumbnail": "https://i.ytimg.com/vi/AkHZ7-DmOQM/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=AkHZ7-DmOQM",
+              "duration": 648,
+              "subtitle": "30 May 2026"
+            },
+            {
+              "name": "Hauling bike with ride on truck and trailer to rescue dad on wooded trail. Educational | Kid Crew",
+              "videoId": "uNhAXs3O8nA",
+              "thumbnail": "https://i.ytimg.com/vi/uNhAXs3O8nA/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=uNhAXs3O8nA",
+              "duration": 747,
+              "subtitle": "30 Apr 2026"
+            },
+            {
+              "name": "Delivering toy trucks with kids ride on semi truck and trailer. Educational | Kid Crew",
+              "videoId": "vQUnOYW5cdI",
+              "thumbnail": "https://i.ytimg.com/vi/vQUnOYW5cdI/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=vQUnOYW5cdI",
+              "duration": 986,
+              "subtitle": "30 Apr 2026"
+            },
+            {
+              "name": "Launching kids Space Shuttle to International Space Station to fix computer. Educational | Kid Crew",
+              "videoId": "SEI-vBr4nm0",
+              "thumbnail": "https://i.ytimg.com/vi/SEI-vBr4nm0/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=SEI-vBr4nm0",
+              "duration": 847,
+              "subtitle": "30 Mar 2026"
+            },
+            {
+              "name": "Building tower crane to move ride on truck and toys with forklift Educational | Kid Crew",
+              "videoId": "FG6VwH6nuY0",
+              "thumbnail": "https://i.ytimg.com/vi/FG6VwH6nuY0/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=FG6VwH6nuY0",
+              "duration": 883,
+              "subtitle": "30 Mar 2026"
+            },
+            {
+              "name": "Building water wheel to make power with construction snowmobile, trailer. Educational | Kid Crew",
+              "videoId": "dZdpKZNMejQ",
+              "thumbnail": "https://i.ytimg.com/vi/dZdpKZNMejQ/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=dZdpKZNMejQ",
+              "duration": 730,
+              "subtitle": "28 Feb 2026"
+            },
+            {
+              "name": "Remote controlled truck saves dad and plows snow with crawler tracks. Educational | Kid Crew",
+              "videoId": "ZIBmtlE54Xo",
+              "thumbnail": "https://i.ytimg.com/vi/ZIBmtlE54Xo/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=ZIBmtlE54Xo",
+              "duration": 707,
+              "subtitle": "28 Feb 2026"
+            },
+            {
+              "name": "Lifting toilet with kids ride on crane truck at construction site. Educational | Kid Crew",
+              "videoId": "P7OiSJyzSmk",
+              "thumbnail": "https://i.ytimg.com/vi/P7OiSJyzSmk/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=P7OiSJyzSmk",
+              "duration": 783,
+              "subtitle": "30 Jan 2026"
+            },
+            {
+              "name": "Ocean rescue with lifeguard jet ski, then tractor & garbage truck work beach. Educational | Kid Crew",
+              "videoId": "ZXDV3P-LKc4",
+              "thumbnail": "https://i.ytimg.com/vi/ZXDV3P-LKc4/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=ZXDV3P-LKc4",
+              "duration": 852,
+              "subtitle": "30 Jan 2026"
+            },
+            {
+              "name": "Rescuing school bus stuck in snow with kids snowmobile, playing R/Cs on ice. Educational | Kid Crew",
+              "videoId": "SMw0a4RX8MY",
+              "thumbnail": "https://i.ytimg.com/vi/SMw0a4RX8MY/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=SMw0a4RX8MY",
+              "duration": 596,
+              "subtitle": "30 Dec 2025"
+            },
+            {
+              "name": "Snowmobile Christmas delivery and building winter camping shelter. Educational | Kid Crew",
+              "videoId": "YW_mrbd3Uwc",
+              "thumbnail": "https://i.ytimg.com/vi/YW_mrbd3Uwc/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=YW_mrbd3Uwc",
+              "duration": 778,
+              "subtitle": "30 Dec 2025"
+            },
+            {
+              "name": "Solving kids police mystery story as spy with ride on command center, drone. Educational | Kid Crew",
+              "videoId": "FHLisMZldh4",
+              "thumbnail": "https://i.ytimg.com/vi/FHLisMZldh4/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=FHLisMZldh4",
+              "duration": 1242,
+              "subtitle": "30 Nov 2025"
+            },
+            {
+              "name": "Miniature kids combine harvesting soybeans on farm with semi truck. Educational | Kid Crew",
+              "videoId": "f9VryUCXIns",
+              "thumbnail": "https://i.ytimg.com/vi/f9VryUCXIns/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=f9VryUCXIns",
+              "duration": 906,
+              "subtitle": "30 Nov 2025"
+            },
+            {
+              "name": "Building kids ride on hovercraft to help a friendly witch on Halloween. Educational | Kid Crew",
+              "videoId": "1t8XpxZI3o0",
+              "thumbnail": "https://i.ytimg.com/vi/1t8XpxZI3o0/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=1t8XpxZI3o0",
+              "duration": 733,
+              "subtitle": "30 Oct 2025"
+            },
+            {
+              "name": "Tow truck emergencies with dad’s go kart, mom’s Gator, and engine repair. Educational | Kid Crew",
+              "videoId": "1xRKDJntClw",
+              "thumbnail": "https://i.ytimg.com/vi/1xRKDJntClw/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=1xRKDJntClw",
+              "duration": 776,
+              "subtitle": "30 Oct 2025"
+            },
+            {
+              "name": "Camping in kids school bus, lost in woods, and rescued by kids helicopter. Educational | Kid Crew",
+              "videoId": "vnbqNkh9h1U",
+              "thumbnail": "https://i.ytimg.com/vi/vnbqNkh9h1U/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=vnbqNkh9h1U",
+              "duration": 951,
+              "subtitle": "30 Sep 2025"
+            },
+            {
+              "name": "Flying Goodyear Blimp to film a race & fueling via kids airplane tanker truck Educational | Kid Crew",
+              "videoId": "yXSjU-nkCNI",
+              "thumbnail": "https://i.ytimg.com/vi/yXSjU-nkCNI/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=yXSjU-nkCNI",
+              "duration": 1054,
+              "subtitle": "30 Sep 2025"
+            },
+            {
+              "name": "Dumpster delivery with kids roll-off garbage truck and trash cleanup. Educational | Kid Crew",
+              "videoId": "dKYe7-IoJvw",
+              "thumbnail": "https://i.ytimg.com/vi/dKYe7-IoJvw/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=dKYe7-IoJvw",
+              "duration": 704,
+              "subtitle": "30 Aug 2025"
+            },
+            {
+              "name": "Back to school on kids school bus. Science, recess, lunch, gym, and reading. Educational | Kid Crew",
+              "videoId": "K_n4DRu9fcE",
+              "thumbnail": "https://i.ytimg.com/vi/K_n4DRu9fcE/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=K_n4DRu9fcE",
+              "duration": 824,
+              "subtitle": "30 Jul 2025"
+            },
+            {
+              "name": "Behind the scenes stories of ride on toy trucks and four favorite episodes. Educational | Kid Crew",
+              "videoId": "XL6k1F1X2sQ",
+              "thumbnail": "https://i.ytimg.com/vi/XL6k1F1X2sQ/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=XL6k1F1X2sQ",
+              "duration": 1227,
+              "subtitle": "30 Jul 2025"
+            },
+            {
+              "name": "Fixing pothole in road with kids steamroller, dump truck, and trailer. Educational | Kid Crew",
+              "videoId": "ooIZC4v50jE",
+              "thumbnail": "https://i.ytimg.com/vi/ooIZC4v50jE/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=ooIZC4v50jE",
+              "duration": 814,
+              "subtitle": "30 Jul 2025"
+            },
+            {
+              "name": "Portable toilet plumbing emergency with kids ride on septic truck and trailer Educational | Kid Crew",
+              "videoId": "8dvzcsqeYr8",
+              "thumbnail": "https://i.ytimg.com/vi/8dvzcsqeYr8/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=8dvzcsqeYr8",
+              "duration": 655,
+              "subtitle": "30 Jul 2025"
+            },
+            {
+              "name": "Rescuing dad from fishing emergency with kids ride on boat and raft. Educational | Kid Crew",
+              "videoId": "VU-RWdY02oA",
+              "thumbnail": "https://i.ytimg.com/vi/VU-RWdY02oA/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=VU-RWdY02oA",
+              "duration": 814,
+              "subtitle": "30 Jul 2025"
+            },
+            {
+              "name": "Recovering stolen car with kids ride on Police undercover tow truck. Educational | Kid Crew",
+              "videoId": "KiaIQ1g9QZE",
+              "thumbnail": "https://i.ytimg.com/vi/KiaIQ1g9QZE/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=KiaIQ1g9QZE",
+              "duration": 774,
+              "subtitle": "30 Jul 2025"
+            },
+            {
+              "name": "Excavating stuck backhoe with kids ride on semi truck and doing backhoe work. Educational | Kid Crew",
+              "videoId": "ty7DiU1BtaU",
+              "thumbnail": "https://i.ytimg.com/vi/ty7DiU1BtaU/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=ty7DiU1BtaU",
+              "duration": 620,
+              "subtitle": "30 Jul 2025"
+            },
+            {
+              "name": "Trash route with kids rear load garbage truck and trash truck toys. Educational | Kid Crew",
+              "videoId": "i9JEWJEqeIo",
+              "thumbnail": "https://i.ytimg.com/vi/i9JEWJEqeIo/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=i9JEWJEqeIo",
+              "duration": 777,
+              "subtitle": "30 Jul 2025"
+            },
+            {
+              "name": "Raising baby chicks for eggs with kids ride on John Deere Gator farm truck. Educational | Kid Crew",
+              "videoId": "j8sGRdyLKQU",
+              "thumbnail": "https://i.ytimg.com/vi/j8sGRdyLKQU/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=j8sGRdyLKQU",
+              "duration": 530,
+              "subtitle": "30 Jul 2025"
+            },
+            {
+              "name": "Paving rocky slope with kids ride on dump truck, bulldozer, and side by side. Educational | Kid Crew",
+              "videoId": "dR2KgYH9jTY",
+              "thumbnail": "https://i.ytimg.com/vi/dR2KgYH9jTY/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=dR2KgYH9jTY",
+              "duration": 642,
+              "subtitle": "30 Jul 2025"
+            },
+            {
+              "name": "Rescuing mom from septic plumbing emergency funny story with trucks and toys. Educational | Kid Crew",
+              "videoId": "LfYjI6M4sc0",
+              "thumbnail": "https://i.ytimg.com/vi/LfYjI6M4sc0/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=LfYjI6M4sc0",
+              "duration": 676,
+              "subtitle": "30 Jul 2025"
+            },
+            {
+              "name": "Plowing road and rescuing stuck truck with kids semi tractor snow plow truck. Educational | Kid Crew",
+              "videoId": "6o3zSTISGTs",
+              "thumbnail": "https://i.ytimg.com/vi/6o3zSTISGTs/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=6o3zSTISGTs",
+              "duration": 639,
+              "subtitle": "30 Jul 2025"
+            },
+            {
+              "name": "Winter camping adventure with kids RV trailer and ride on truck, ice fishing. Educational | Kid Crew",
+              "videoId": "9LOEHbJ2gOo",
+              "thumbnail": "https://i.ytimg.com/vi/9LOEHbJ2gOo/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=9LOEHbJ2gOo",
+              "duration": 583,
+              "subtitle": "30 Jul 2025"
+            },
+            {
+              "name": "Finding buried treasure on beach with metal detector, tractors & ride on toys Educational | Kid Crew",
+              "videoId": "0A8OJIKMPIo",
+              "thumbnail": "https://i.ytimg.com/vi/0A8OJIKMPIo/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=0A8OJIKMPIo",
+              "duration": 511,
+              "subtitle": "30 Jul 2025"
+            },
+            {
+              "name": "Hauling trees with kids ride on logging semi truck and cutting with chainsaw. Educational | Kid Crew",
+              "videoId": "0CWpaiWMeKc",
+              "thumbnail": "https://i.ytimg.com/vi/0CWpaiWMeKc/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=0CWpaiWMeKc",
+              "duration": 605,
+              "subtitle": "30 Jul 2025"
+            },
+            {
+              "name": "Christmas toy delivery on backyard railroad with kids ride on train. Educational | Kid Crew",
+              "videoId": "QX0RjIpG1OA",
+              "thumbnail": "https://i.ytimg.com/vi/QX0RjIpG1OA/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=QX0RjIpG1OA",
+              "duration": 623,
+              "subtitle": "30 Jul 2025"
+            },
+            {
+              "name": "Clearing rotten trees with kids ride on bulldozer and forestry skid steer. Educational | Kid Crew",
+              "videoId": "KtSZVnjZYDo",
+              "thumbnail": "https://i.ytimg.com/vi/KtSZVnjZYDo/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=KtSZVnjZYDo",
+              "duration": 487,
+              "subtitle": "30 Jul 2025"
+            },
+            {
+              "name": "Mud racing kids ride on truck vs. dad's go-kart through mud, jump, and woods. Educational | Kid Crew",
+              "videoId": "N3peIbEjyGE",
+              "thumbnail": "https://i.ytimg.com/vi/N3peIbEjyGE/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=N3peIbEjyGE",
+              "duration": 505,
+              "subtitle": "30 Jul 2025"
+            },
+            {
+              "name": "Farm delivery with kids ride on semi truck and trailer, tractor, forklift. Educational | Kid Crew",
+              "videoId": "kCLLyVLFprY",
+              "thumbnail": "https://i.ytimg.com/vi/kCLLyVLFprY/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=kCLLyVLFprY",
+              "duration": 579,
+              "subtitle": "30 Jul 2025"
+            },
+            {
+              "name": "Halloween bug control truck shrinks kids ride on monster truck spider. Educational | Kid Crew",
+              "videoId": "w_vkhwzGNZ0",
+              "thumbnail": "https://i.ytimg.com/vi/w_vkhwzGNZ0/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=w_vkhwzGNZ0",
+              "duration": 550,
+              "subtitle": "30 Jul 2025"
+            },
+            {
+              "name": "High speed Police chase with kids ride on helicopter and police car. Educational | Kid Crew",
+              "videoId": "eMhYM5nH8_c",
+              "thumbnail": "https://i.ytimg.com/vi/eMhYM5nH8_c/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=eMhYM5nH8_c",
+              "duration": 584,
+              "subtitle": "30 Jul 2025"
+            },
+            {
+              "name": "Camping adventure with kids RV trailer and ride on truck, sleeping in camper. Educational | Kid Crew",
+              "videoId": "-kON5AnEKBU",
+              "thumbnail": "https://i.ytimg.com/vi/-kON5AnEKBU/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=-kON5AnEKBU",
+              "duration": 579,
+              "subtitle": "30 Jul 2025"
+            },
+            {
+              "name": "Kid's speed boat adventure with ride on truck and Lego Titanic story. Educational | Kid Crew",
+              "videoId": "C6dutBMi9eI",
+              "thumbnail": "https://i.ytimg.com/vi/C6dutBMi9eI/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=C6dutBMi9eI",
+              "duration": 592,
+              "subtitle": "30 Jul 2025"
+            },
+            {
+              "name": "Mowing lawn with kids and real zero turn mower, push lawnmower & weed whacker Educational | Kid Crew",
+              "videoId": "v8ngc-RULoY",
+              "thumbnail": "https://i.ytimg.com/vi/v8ngc-RULoY/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=v8ngc-RULoY",
+              "duration": 523,
+              "subtitle": "30 Jul 2025"
+            },
+            {
+              "name": "Farm fresh pizza with kids ride on tractor, motorcycle, cooking and delivery. Educational | Kid Crew",
+              "videoId": "EEe15bVFYPk",
+              "thumbnail": "https://i.ytimg.com/vi/EEe15bVFYPk/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=EEe15bVFYPk",
+              "duration": 439,
+              "subtitle": "30 Jul 2025"
+            },
+            {
+              "name": "Pouring concrete with kids ride on cement mixer, construction trucks & toys. Educational | Kid Crew",
+              "videoId": "2w-yIE8j7HE",
+              "thumbnail": "https://i.ytimg.com/vi/2w-yIE8j7HE/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=2w-yIE8j7HE",
+              "duration": 599,
+              "subtitle": "30 Jul 2024"
+            },
+            {
+              "name": "Catching pet dinosaur with Jurassic Park Power Wheels truck, T-Rex. Educational | Kid Crew",
+              "videoId": "x9WRJJUHjpM",
+              "thumbnail": "https://i.ytimg.com/vi/x9WRJJUHjpM/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=x9WRJJUHjpM",
+              "duration": 370,
+              "subtitle": "30 Jul 2024"
+            },
+            {
+              "name": "Fixing power outage with power wheels bucket truck and lighting bug lantern. Educational | Kid Crew",
+              "videoId": "KyK41U1kT0g",
+              "thumbnail": "https://i.ytimg.com/vi/KyK41U1kT0g/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=KyK41U1kT0g",
+              "duration": 493,
+              "subtitle": "30 Jul 2024"
+            },
+            {
+              "name": "Grinding stump and using toy chainsaw, forestry logging trucks. Educational stump grinder | Kid Crew",
+              "videoId": "3m8JcZmsvlE",
+              "thumbnail": "https://i.ytimg.com/vi/3m8JcZmsvlE/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=3m8JcZmsvlE",
+              "duration": 542,
+              "subtitle": "30 Jul 2024"
+            },
+            {
+              "name": "Rescuing mom from plumbing emergencies funny stories with trucks and toys. Educational | Kid Crew",
+              "videoId": "-sdnRAi76eY",
+              "thumbnail": "https://i.ytimg.com/vi/-sdnRAi76eY/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=-sdnRAi76eY",
+              "duration": 528,
+              "subtitle": "30 Jul 2024"
+            },
+            {
+              "name": "Landscaping mulch and trees with tractor, truck, digger, and water trailer. Educational | Kid Crew",
+              "videoId": "gXHxHm2epWw",
+              "thumbnail": "https://i.ytimg.com/vi/gXHxHm2epWw/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=gXHxHm2epWw",
+              "duration": 489,
+              "subtitle": "30 Jul 2024"
+            },
+            {
+              "name": "Wildfire rescue with kids forest fire truck, tractor, and ambulance. Educational | Kid Crew",
+              "videoId": "fR2ub94pSRk",
+              "thumbnail": "https://i.ytimg.com/vi/fR2ub94pSRk/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=fR2ub94pSRk",
+              "duration": 435,
+              "subtitle": "30 Jul 2024"
+            },
+            {
+              "name": "Flying ride on kids rocket ship to launch satellite in space for eclipse. Educational | Kid Crew",
+              "videoId": "JLNq5HOX4Es",
+              "thumbnail": "https://i.ytimg.com/vi/JLNq5HOX4Es/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=JLNq5HOX4Es",
+              "duration": 407,
+              "subtitle": "30 Jul 2024"
+            },
+            {
+              "name": "Driving train on backyard railroad to deliver straw and rescue locomotive. Educational | Kid Crew",
+              "videoId": "1GbwjlwdiDA",
+              "thumbnail": "https://i.ytimg.com/vi/1GbwjlwdiDA/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=1GbwjlwdiDA",
+              "duration": 481,
+              "subtitle": "30 Jul 2024"
+            },
+            {
+              "name": "Delivering Toys and Chainsaw with Power Wheels Mail Truck. Educational how the USPS works | Kid Crew",
+              "videoId": "LYOHWxVT2Yw",
+              "thumbnail": "https://i.ytimg.com/vi/LYOHWxVT2Yw/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=LYOHWxVT2Yw",
+              "duration": 362,
+              "subtitle": "30 Jul 2024"
+            },
+            {
+              "name": "Avalanche firefighter rescue with kids power wheels truck and fire dog. Educational | Kid Crew",
+              "videoId": "jYd6syGQBsY",
+              "thumbnail": "https://i.ytimg.com/vi/jYd6syGQBsY/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=jYd6syGQBsY",
+              "duration": 325,
+              "subtitle": "30 Jul 2024"
+            },
+            {
+              "name": "Christmas cleanup with kids ride on Tractor and water trailer inside. Educational | Kid Crew",
+              "videoId": "J0ptUQRDjBA",
+              "thumbnail": "https://i.ytimg.com/vi/J0ptUQRDjBA/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=J0ptUQRDjBA",
+              "duration": 376,
+              "subtitle": "30 Jul 2024"
+            },
+            {
+              "name": "Racing kids power wheels truck, tractor, and ride on race cars. Educational drag racing | Kid Crew",
+              "videoId": "StnUHKseC5A",
+              "thumbnail": "https://i.ytimg.com/vi/StnUHKseC5A/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=StnUHKseC5A",
+              "duration": 242,
+              "subtitle": "30 Jul 2024"
+            },
+            {
+              "name": "Christmas landscaping with backhoe, truck, trailer, chainsaw, and lights. Educational | Kid Crew",
+              "videoId": "cbND19mxMvg",
+              "thumbnail": "https://i.ytimg.com/vi/cbND19mxMvg/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=cbND19mxMvg",
+              "duration": 395,
+              "subtitle": "30 Jul 2024"
+            },
+            {
+              "name": "Rescuing pet from fire with kids ride on fire truck, drone & wrecking ball. Educational | Kid Crew",
+              "videoId": "5LELPtnjN48",
+              "thumbnail": "https://i.ytimg.com/vi/5LELPtnjN48/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=5LELPtnjN48",
+              "duration": 407,
+              "subtitle": "30 Jul 2024"
+            },
+            {
+              "name": "Harvesting crops with kids power wheel tractor & real combine harvester, farm Educational | Kid Crew",
+              "videoId": "6NF-4EkDQTg",
+              "thumbnail": "https://i.ytimg.com/vi/6NF-4EkDQTg/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=6NF-4EkDQTg",
+              "duration": 545,
+              "subtitle": "30 Jul 2024"
+            },
+            {
+              "name": "Crushing Power Wheels with ride on kids Monster Truck Educational how monster trucks work | Kid Crew",
+              "videoId": "1V_jqAUrn_g",
+              "thumbnail": "https://i.ytimg.com/vi/1V_jqAUrn_g/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=1V_jqAUrn_g",
+              "duration": 485,
+              "subtitle": "30 Jul 2024"
+            },
+            {
+              "name": "Collecting leaves with kids zero turn mower, tractor, and truck. Educational leaf blowers | Kid Crew",
+              "videoId": "V2evXHMCOyg",
+              "thumbnail": "https://i.ytimg.com/vi/V2evXHMCOyg/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=V2evXHMCOyg",
+              "duration": 360,
+              "subtitle": "30 Jul 2024"
+            },
+            {
+              "name": "Flying pumpkin delivery with ride on truck and trailer. Educational pumpkin chunking | Kid Crew",
+              "videoId": "QuPOhH6b6MI",
+              "thumbnail": "https://i.ytimg.com/vi/QuPOhH6b6MI/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=QuPOhH6b6MI",
+              "duration": 381,
+              "subtitle": "30 Jul 2024"
+            },
+            {
+              "name": "Firefighter crash rescue with kids power wheel fire truck. Educational vehicle entry | Kid Crew",
+              "videoId": "A3zfVYrDmtk",
+              "thumbnail": "https://i.ytimg.com/vi/A3zfVYrDmtk/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=A3zfVYrDmtk",
+              "duration": 474,
+              "subtitle": "30 Jul 2024"
+            },
+            {
+              "name": "Boating and fishing adventure with kids ride on boat. Educational how to fish | Kid Crew",
+              "videoId": "T3iNEBWxNfs",
+              "thumbnail": "https://i.ytimg.com/vi/T3iNEBWxNfs/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=T3iNEBWxNfs",
+              "duration": 428,
+              "subtitle": "30 Jul 2024"
+            },
+            {
+              "name": "Farming race with Gator, tractor, truck, ATV, forklifts, and chickens. Educational | Kid Crew",
+              "videoId": "vZE0nBrg6Gk",
+              "thumbnail": "https://i.ytimg.com/vi/vZE0nBrg6Gk/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=vZE0nBrg6Gk",
+              "duration": 438,
+              "subtitle": "30 Jul 2024"
+            },
+            {
+              "name": "Rescuing stuck ice cream truck with kids off road truck. Educational bouncy houses | Kid Crew",
+              "videoId": "cRhnvdCVjhc",
+              "thumbnail": "https://i.ytimg.com/vi/cRhnvdCVjhc/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=cRhnvdCVjhc",
+              "duration": 303,
+              "subtitle": "30 Jul 2024"
+            },
+            {
+              "name": "Firefighter rescue with kids power wheel fire truck. Educational how fire trucks work | Kid Crew",
+              "videoId": "PMT1-OWt7hg",
+              "thumbnail": "https://i.ytimg.com/vi/PMT1-OWt7hg/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=PMT1-OWt7hg",
+              "duration": 394,
+              "subtitle": "30 Jul 2024"
+            },
+            {
+              "name": "Baling hay with kids power wheel tractor & real tractor to feed horse on farm Educational | Kid Crew",
+              "videoId": "FXr5_oeuk_I",
+              "thumbnail": "https://i.ytimg.com/vi/FXr5_oeuk_I/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=FXr5_oeuk_I",
+              "duration": 417,
+              "subtitle": "30 Jul 2024"
+            },
+            {
+              "name": "Landscaping race with zero turn, truck, tractor, chainsaw, and weed wacker. Educational | Kid Crew",
+              "videoId": "B4VlaYsladk",
+              "thumbnail": "https://i.ytimg.com/vi/B4VlaYsladk/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=B4VlaYsladk",
+              "duration": 361,
+              "subtitle": "30 Jul 2023"
+            },
+            {
+              "name": "Watering crops and fertilizing with kids tractor on the farm. Educational how pumps work | Kid Crew",
+              "videoId": "RmpbG7KIVQE",
+              "thumbnail": "https://i.ytimg.com/vi/RmpbG7KIVQE/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=RmpbG7KIVQE",
+              "duration": 300,
+              "subtitle": "30 Jul 2023"
+            },
+            {
+              "name": "Moving house and landscaping with kids ride on truck and zero turn lawnmower. Educational | Kid Crew",
+              "videoId": "7mln6mgE7Vc",
+              "thumbnail": "https://i.ytimg.com/vi/7mln6mgE7Vc/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=7mln6mgE7Vc",
+              "duration": 400,
+              "subtitle": "30 Jul 2023"
+            },
+            {
+              "name": "Mowing lawn with kids ride on zero turn, tractor, truck. Educational how a mower works | Kid Crew",
+              "videoId": "nxjI0oGG-Ew",
+              "thumbnail": "https://i.ytimg.com/vi/nxjI0oGG-Ew/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=nxjI0oGG-Ew",
+              "duration": 430,
+              "subtitle": "30 Jul 2023"
+            },
+            {
+              "name": "Gas station action: fixing ATV, tow truck rescue, fuel trash truck, car wash. Educational | Kid Crew",
+              "videoId": "uhjq0DrP4FI",
+              "thumbnail": "https://i.ytimg.com/vi/uhjq0DrP4FI/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=uhjq0DrP4FI",
+              "duration": 368,
+              "subtitle": "30 Jul 2023"
+            },
+            {
+              "name": "Police dog mystery story finding stolen tractor. Educational how K-9 police work | Kid Crew",
+              "videoId": "ZN9M7q94Xi4",
+              "thumbnail": "https://i.ytimg.com/vi/ZN9M7q94Xi4/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=ZN9M7q94Xi4",
+              "duration": 295,
+              "subtitle": "30 Jul 2023"
+            },
+            {
+              "name": "Truck and tractor stuck in mud then washed. Educational how planes are cleaned & painted | Kid Crew",
+              "videoId": "ZdklTDHzQIU",
+              "thumbnail": "https://i.ytimg.com/vi/ZdklTDHzQIU/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=ZdklTDHzQIU",
+              "duration": 267,
+              "subtitle": "30 Jul 2023"
+            },
+            {
+              "name": "Rescuing mom in woods with off-road truck trail ride. Educational how suspension works | Kid Crew",
+              "videoId": "fO4h1U-shLA",
+              "thumbnail": "https://i.ytimg.com/vi/fO4h1U-shLA/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=fO4h1U-shLA",
+              "duration": 349,
+              "subtitle": "30 Jul 2023"
+            },
+            {
+              "name": "Plowing dirt and planting corn on the farm with kids tractor. Educational front loaders | Kid Crew",
+              "videoId": "UrnnFHjxbOg",
+              "thumbnail": "https://i.ytimg.com/vi/UrnnFHjxbOg/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=UrnnFHjxbOg",
+              "duration": 359,
+              "subtitle": "30 Jul 2023"
+            },
+            {
+              "name": "Demolishing broken playset with toy construction trucks. Educational how excavators demo | Kid Crew",
+              "videoId": "rezZP9M4TvE",
+              "thumbnail": "https://i.ytimg.com/vi/rezZP9M4TvE/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=rezZP9M4TvE",
+              "duration": 277,
+              "subtitle": "30 Jul 2023"
+            },
+            {
+              "name": "Caring for honey bees with ride on truck and trailer. Educational how beehives work | Kid Crew",
+              "videoId": "DkufiPGcnoQ",
+              "thumbnail": "https://i.ytimg.com/vi/DkufiPGcnoQ/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=DkufiPGcnoQ",
+              "duration": 346,
+              "subtitle": "30 Jul 2023"
+            },
+            {
+              "name": "Trash day with kids ride on garbage truck & landfill trip Educational how recycling works | Kid Crew",
+              "videoId": "Fg3fb2MSPEk",
+              "thumbnail": "https://i.ytimg.com/vi/Fg3fb2MSPEk/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=Fg3fb2MSPEk",
+              "duration": 436,
+              "subtitle": "30 Jul 2023"
+            },
+            {
+              "name": "Catching criminal with police car and drone after ATV chase. Educational | Kid Crew",
+              "videoId": "-KnTLuliOZw",
+              "thumbnail": "https://i.ytimg.com/vi/-KnTLuliOZw/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=-KnTLuliOZw",
+              "duration": 272,
+              "subtitle": "30 Jul 2023"
+            },
+            {
+              "name": "Dinosaur police truck chase and baby T-rex rescue! Educational how model rockets work | Kid Crew",
+              "videoId": "vN7dCS4LoIM",
+              "thumbnail": "https://i.ytimg.com/vi/vN7dCS4LoIM/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=vN7dCS4LoIM",
+              "duration": 418,
+              "subtitle": "30 Jul 2023"
+            },
+            {
+              "name": "Plowing snow with power wheels truck, winter storm cleanup, and shoveling. Educational | Kid Crew",
+              "videoId": "ExYuxnc7m-g",
+              "thumbnail": "https://i.ytimg.com/vi/ExYuxnc7m-g/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=ExYuxnc7m-g",
+              "duration": 489,
+              "subtitle": "30 Jul 2023"
+            },
+            {
+              "name": "Driving and racing go kart we found in woods, hauled with truck, and fixed. Educational | Kid Crew",
+              "videoId": "HgXiSiQMUcE",
+              "thumbnail": "https://i.ytimg.com/vi/HgXiSiQMUcE/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=HgXiSiQMUcE",
+              "duration": 350,
+              "subtitle": "30 Jul 2023"
+            },
+            {
+              "name": "Driving Power Wheel snowmobile, awesome winter sledding track and snow igloo. Educational | Kid Crew",
+              "videoId": "-MU5OFK2Mjc",
+              "thumbnail": "https://i.ytimg.com/vi/-MU5OFK2Mjc/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=-MU5OFK2Mjc",
+              "duration": 377,
+              "subtitle": "30 Jul 2023"
+            },
+            {
+              "name": "Playing in the mud on ATV and making trail in woods, building bridge. Educational | Kid Crew",
+              "videoId": "YfMKXt1-jIU",
+              "thumbnail": "https://i.ytimg.com/vi/YfMKXt1-jIU/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=YfMKXt1-jIU",
+              "duration": 394,
+              "subtitle": "30 Jul 2023"
+            },
+            {
+              "name": "🎄 Christmas for kids! Cutting tree, decorating, gingerbread, holiday lights | Kid Crew",
+              "videoId": "AJgNTp7bsf4",
+              "thumbnail": "https://i.ytimg.com/vi/AJgNTp7bsf4/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=AJgNTp7bsf4",
+              "duration": 451,
+              "subtitle": "30 Jul 2023"
+            },
+            {
+              "name": "Tow truck tug of war challenge and power wheels tug of war tournament. How traction works | Kid Crew",
+              "videoId": "lU3wnikQU5c",
+              "thumbnail": "https://i.ytimg.com/vi/lU3wnikQU5c/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=lU3wnikQU5c",
+              "duration": 190,
+              "subtitle": "30 Jul 2023"
+            },
+            {
+              "name": "Tow truck rescue with kids ride on toy truck and tractor. Educational how winches work | Kid Crew",
+              "videoId": "VB4Ss6Kk6b0",
+              "thumbnail": "https://i.ytimg.com/vi/VB4Ss6Kk6b0/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=VB4Ss6Kk6b0",
+              "duration": 361,
+              "subtitle": "30 Jul 2023"
+            },
+            {
+              "name": "Airplanes for kids with pretend play in a real cockpit. Educational how planes fly | Kid Crew",
+              "videoId": "dDUxkuDuBEc",
+              "thumbnail": "https://i.ytimg.com/vi/dDUxkuDuBEc/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=dDUxkuDuBEc",
+              "duration": 323,
+              "subtitle": "30 Jul 2023"
+            },
+            {
+              "name": "Helping farm animals with kids toy truck and tractor. Educational how milking cows work | Kid Crew",
+              "videoId": "6SPZ4NTHybI",
+              "thumbnail": "https://i.ytimg.com/vi/6SPZ4NTHybI/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=6SPZ4NTHybI",
+              "duration": 357,
+              "subtitle": "30 Jul 2023"
+            },
+            {
+              "name": "Caring for chickens with kids ride on truck, collect eggs, feed. Educational cooking eggs | Kid Crew",
+              "videoId": "qGIDdA-H0-Q",
+              "thumbnail": "https://i.ytimg.com/vi/qGIDdA-H0-Q/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=qGIDdA-H0-Q",
+              "duration": 481,
+              "subtitle": "30 Jul 2023"
+            },
+            {
+              "name": "Camping adventure in Power Wheels RV, roof tent on Barbie car Dream Camper, campfire | Kid Crew",
+              "videoId": "79k-2jqnQJs",
+              "thumbnail": "https://i.ytimg.com/vi/79k-2jqnQJs/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=79k-2jqnQJs",
+              "duration": 608,
+              "subtitle": "30 Jul 2023"
+            },
+            {
+              "name": "Harvesting vegetables from the garden with kids tractor. Educational how greenhouses work | Kid Crew",
+              "videoId": "XQVu8WjoZZk",
+              "thumbnail": "https://i.ytimg.com/vi/XQVu8WjoZZk/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=XQVu8WjoZZk",
+              "duration": 361,
+              "subtitle": "30 Jul 2023"
+            },
+            {
+              "name": "Fixing our ride on power wheels 18V toy truck. Educational how gears work | Kid Crew",
+              "videoId": "a96JrzYpvCE",
+              "thumbnail": "https://i.ytimg.com/vi/a96JrzYpvCE/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=a96JrzYpvCE",
+              "duration": 266,
+              "subtitle": "30 Jul 2023"
+            },
+            {
+              "name": "Kids use construction vehicles! Educational how excavators / diggers / backhoes work | Kid Crew",
+              "videoId": "3bxoNTPsa1s",
+              "thumbnail": "https://i.ytimg.com/vi/3bxoNTPsa1s/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=3bxoNTPsa1s",
+              "duration": 303,
+              "subtitle": "30 Jul 2023"
+            },
+            {
+              "name": "Helping animals with toy chainsaw and kids ride on truck. Educational how chainsaws work | Kid Crew",
+              "videoId": "qfKMjiodP7s",
+              "thumbnail": "https://i.ytimg.com/vi/qfKMjiodP7s/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=qfKMjiodP7s",
+              "duration": 459,
+              "subtitle": "30 Jul 2023"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
