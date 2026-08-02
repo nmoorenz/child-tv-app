@@ -1,5 +1,5 @@
 {
-  "generatedWith": "build_catalog.py",
+  "generatedWith": "update_kidcrew.py",
   "channels": [
     {
       "id": "numberblocks",
