@@ -70,7 +70,8 @@ dependencies {
     implementation("com.github.TeamNewPipe:NewPipeExtractor:v0.26.4")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
-    // Back-fills modern Java APIs onto old Android. (May bump to 2.1.x once we see
-    // the exact NoSuchMethodError, to cover more APIs.)
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+    // Back-fills modern Java APIs onto old Android. The "_nio" variant is REQUIRED
+    // by NewPipeExtractor for minSdk < 33 (covers URLDecoder.decode(String, Charset),
+    // which only exists natively on Android 13+). Same version NewPipe itself uses.
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs_nio:2.1.5")
 }
