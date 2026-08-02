@@ -64,9 +64,12 @@
   .tile:focus,.tile.focus{border-color:var(--focus);transform:scale(1.06);
     box-shadow:0 10px 30px rgba(0,0,0,.5)}
   /* grid layout (e.g. Kid Crew): wrapping, wider cards, with dates */
-  .grid-tiles{display:flex;flex-wrap:wrap;gap:18px;padding:8px 4px 14px}
-  .tile.wide{width:300px}
-  .tile.wide .thumb{height:169px}
+  /* Capped to ≈ the TV's usable card width so the number across matches the TV. */
+  .grid-tiles{display:flex;flex-wrap:wrap;gap:18px;padding:8px 4px 14px;max-width:880px}
+  .tvwidth-note{color:var(--muted);font-size:12px;margin:0 0 10px;
+    border-left:3px solid #33406b;padding-left:10px}
+  .tile.wide{width:270px}
+  .tile.wide .thumb{height:152px}
   .tile.wide .t{font-size:15px;min-height:40px}
   .tile .date{font-size:12px;color:var(--muted);margin-top:6px;font-weight:600}
 
@@ -356,6 +359,9 @@ function renderTV(){
 function renderGrid(ch, rows){
   const items=[];
   ch.collections.forEach(col=>col.episodes.forEach(ep=>items.push({ep,col})));
+  const note=document.createElement("div"); note.className="tvwidth-note";
+  note.textContent="Grid is capped to ≈ your TV's usable width, so the number of cards across here matches what you'll see on the TV.";
+  rows.appendChild(note);
   const wrap=document.createElement("div"); wrap.className="grid-tiles";
   items.forEach((it,i)=>{
     const {ep,col}=it;
@@ -371,7 +377,7 @@ function renderGrid(ch, rows){
   });
   rows.appendChild(wrap);
 }
-function gridCols(wrap){ return Math.max(1, Math.floor((wrap.clientWidth||1000)/318)); }
+function gridCols(wrap){ return Math.max(1, Math.floor((wrap.clientWidth||1000)/288)); }
 function onGridKey(e,i,wrap){
   const tiles=wrap.querySelectorAll(".tile"); const cols=gridCols(wrap); let t=null;
   if(e.key==="ArrowRight"){e.preventDefault();t=tiles[i+1];}

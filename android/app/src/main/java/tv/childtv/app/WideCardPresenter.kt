@@ -56,6 +56,6 @@ class WideCardPresenter : Presenter() {
     }
 
     companion object {
-        private const val CARD_WIDTH_DP = 380
+        private const val CARD_WIDTH_DP = 270
     }
 }
