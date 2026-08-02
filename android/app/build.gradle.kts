@@ -16,6 +16,7 @@ android {
     }
 
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
@@ -49,5 +50,13 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.8.2")
     implementation("androidx.leanback:leanback:1.0.0")
     implementation("com.github.bumptech.glide:glide:4.16.0")
-    // Playback = framework WebView loading your hosted kidstv-player.html (no extra deps).
+
+    // Native playback: ExoPlayer fed a specific low-res stream we extract on-device.
+    implementation("androidx.media3:media3-exoplayer:1.3.1")
+    implementation("androidx.media3:media3-ui:1.3.1")
+    implementation("androidx.media3:media3-datasource-okhttp:1.3.1")
+    implementation("com.github.TeamNewPipe:NewPipeExtractor:v0.26.4")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 }

@@ -1,8 +1,8 @@
 # Kids TV
 
 A simple Android TV app that lets a child watch a few chosen YouTube channels
-(Numberblocks, Kid Crew) as a friendly, remote-navigable grid — playing each video
-in-app, with no browsing, no recommendations to wander into.
+(Numberblocks, Kid Crew, Half-Asleep Chris) as a friendly, remote-navigable grid —
+playing each video in-app, with no browsing, no recommendations to wander into.
 
 ## What's here
 

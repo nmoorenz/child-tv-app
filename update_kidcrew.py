@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """
-update_kidcrew.py  —  refresh ONLY the Kid Crew channel in catalog.json
+update_kidcrew.py  —  refresh the auto-updating channels in catalog.json
 
-The nightly GitHub Action runs this. It re-scrapes just Kid Crew (Videos tab,
-< 30 min, newest first) and drops it into the existing catalog.json, leaving the
-Numberblocks channel exactly as it is. Numberblocks is generated once by
-build_catalog.py and never re-scraped after that.
+The nightly GitHub Action runs this. It re-scrapes every channel that uses the
+Videos tab (source == "videos" — Kid Crew, Half-Asleep Chris) and leaves the
+playlist channels (Numberblocks) exactly as they are.
 
 Bootstrap (one time): run  python build_catalog.py  to create catalog.json with
-BOTH channels, and commit it. After that this script keeps Kid Crew current.
+ALL channels, and commit it. After that this script keeps the video channels
+current. Channel order follows the CHANNELS list in build_catalog.py.
 """
 
 import json
@@ -18,36 +18,35 @@ from pathlib import Path
 import build_catalog as bc
 
 OUTPUT = Path(__file__).with_name("catalog.json")
-KIDCREW_ID = "kidcrew"
 
 
 def main():
     base_cmd = bc.check_ytdlp()
 
-    kc_config = next((c for c in bc.CHANNELS if c.get("id") == KIDCREW_ID), None)
-    if not kc_config:
-        sys.exit("No 'kidcrew' channel found in build_catalog.CHANNELS")
-
-    # Scrape just Kid Crew.
-    kidcrew_channel = bc.build_channel(base_cmd, kc_config)
-
-    # Load the existing catalog (must already contain Numberblocks).
+    existing = {}
     if OUTPUT.exists():
-        catalog = json.loads(OUTPUT.read_text(encoding="utf-8"))
+        data = json.loads(OUTPUT.read_text(encoding="utf-8"))
+        for c in data.get("channels", []):
+            existing[c.get("id")] = c
     else:
         print("WARNING: catalog.json not found — run build_catalog.py once to "
-              "bootstrap it (Numberblocks will be missing until you do).",
-              file=sys.stderr)
-        catalog = {"generatedWith": "build_catalog.py", "channels": []}
+              "bootstrap it (playlist channels like Numberblocks will be missing "
+              "until you do).", file=sys.stderr)
 
-    channels = [c for c in catalog.get("channels", []) if c.get("id") != KIDCREW_ID]
-    channels.append(kidcrew_channel)  # add/replace Kid Crew (kept last)
-    catalog["channels"] = channels
+    channels = []
+    refreshed = []
+    for ch in bc.CHANNELS:
+        if ch.get("source") == "videos":
+            channels.append(bc.build_channel(base_cmd, ch))   # re-scrape
+            refreshed.append(ch["title"])
+        elif ch["id"] in existing:
+            channels.append(existing[ch["id"]])               # preserve as-is
 
+    catalog = {"generatedWith": "update_kidcrew.py", "channels": channels}
     OUTPUT.write_text(json.dumps(catalog, indent=2, ensure_ascii=False),
                       encoding="utf-8")
-    kept = sum(len(col["episodes"]) for col in kidcrew_channel["collections"])
-    print(f"Kid Crew refreshed: {kept} videos. Numberblocks left unchanged.")
+    print("Refreshed: " + ", ".join(refreshed) +
+          ". Playlist channels left unchanged.")
 
 
 if __name__ == "__main__":

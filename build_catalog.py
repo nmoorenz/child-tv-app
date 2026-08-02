@@ -86,6 +86,14 @@ CHANNELS = [
         "source": "videos",
         "max_duration_seconds": 1800,  # 30 minutes
     },
+    {
+        "id": "halfasleepchris",
+        "title": "Half-Asleep Chris",
+        "url": "https://www.youtube.com/@HalfAsleepChris",
+        "color": "#6c5ce7",
+        "source": "videos",
+        # no max_duration_seconds -> keep all of his videos
+    },
 ]
 
 MAX_VIDEOS_PER_PLAYLIST = 200
@@ -171,8 +179,9 @@ def video_date(entry):
 def collect_videos(base_cmd, ch):
     """Videos-tab mode: newest-first, keep only those under max_duration_seconds."""
     url = ch["url"].rstrip("/") + "/videos"
-    max_dur = ch.get("max_duration_seconds", 1800)
-    print(f"  scraping Videos tab (keeping < {max_dur // 60} min)…")
+    max_dur = ch.get("max_duration_seconds")  # None -> keep all
+    print("  scraping Videos tab (keeping "
+          + (f"< {max_dur // 60} min)…" if max_dur else "all)…"))
     # approximate_date makes the fast flat scrape include upload dates.
     data = ytdlp_json(base_cmd, url, extra=[
         "--playlist-end", "300",
@@ -186,7 +195,7 @@ def collect_videos(base_cmd, ch):
         if not title:
             continue
         dur = v.get("duration")
-        if dur and dur > max_dur:
+        if max_dur and dur and dur > max_dur:
             continue  # skip long compilations
         eps.append({
             "name": title,
