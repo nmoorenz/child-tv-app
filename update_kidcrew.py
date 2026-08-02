@@ -2,9 +2,9 @@
 """
 update_kidcrew.py  —  refresh the auto-updating channels in catalog.json
 
-The nightly GitHub Action runs this. It re-scrapes every channel that uses the
-Videos tab (source == "videos" — Kid Crew, Half-Asleep Chris) and leaves the
-playlist channels (Numberblocks) exactly as they are.
+The nightly GitHub Action runs this. It re-scrapes every channel flagged
+"auto_update": True in build_catalog.py (Kid Crew, Half-Asleep Chris, David Rule)
+and leaves the others (e.g. Numberblocks) exactly as they are.
 
 Bootstrap (one time): run  python build_catalog.py  to create catalog.json with
 ALL channels, and commit it. After that this script keeps the video channels
@@ -36,8 +36,8 @@ def main():
     channels = []
     refreshed = []
     for ch in bc.CHANNELS:
-        if ch.get("source") == "videos":
-            channels.append(bc.build_channel(base_cmd, ch))   # re-scrape
+        if ch.get("auto_update"):
+            channels.append(bc.build_channel(base_cmd, ch))   # re-scrape nightly
             refreshed.append(ch["title"])
         elif ch["id"] in existing:
             channels.append(existing[ch["id"]])               # preserve as-is

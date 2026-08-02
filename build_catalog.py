@@ -85,6 +85,7 @@ CHANNELS = [
         # compilations). One collection, in reverse-chronological order.
         "source": "videos",
         "max_duration_seconds": 1800,  # 30 minutes
+        "auto_update": True,           # refreshed by the nightly job
     },
     {
         "id": "halfasleepchris",
@@ -93,8 +94,23 @@ CHANNELS = [
         "color": "#6c5ce7",
         "source": "videos",
         # no max_duration_seconds -> keep all of his videos
+        "auto_update": True,           # refreshed by the nightly job
+    },
+    {
+        "id": "davidrule",
+        "title": "David Rule",
+        "url": "https://www.youtube.com/@davidmrule",
+        "color": "#e67e22",
+        "source": "videos",
+        "min_date": "20220601",  # only videos on/after 1 June 2022
+        "auto_update": True,     # refreshed by the nightly job
     },
 ]
+
+# NOTE: "source" controls HOW a channel is scraped ("videos" tab, "playlists",
+# or "auto"). "auto_update" is separate — set it True on any channel you want the
+# nightly job to refresh, regardless of how it's scraped. Channels without it
+# (e.g. Numberblocks) are scraped once and then left frozen.
 
 MAX_VIDEOS_PER_PLAYLIST = 200
 OUTPUT = Path(__file__).with_name("catalog.json")
@@ -176,12 +192,33 @@ def video_date(entry):
             or epoch_to_date(entry.get("release_timestamp")))
 
 
+def date_key(entry):
+    """A comparable YYYYMMDD int for an entry's upload date, or None if unknown."""
+    ud = str(entry.get("upload_date") or "")
+    if len(ud) == 8 and ud.isdigit():
+        return int(ud)
+    for key in ("timestamp", "release_timestamp"):
+        ts = entry.get(key)
+        if ts:
+            try:
+                return int(datetime.datetime.utcfromtimestamp(int(ts)).strftime("%Y%m%d"))
+            except (ValueError, TypeError, OSError):
+                pass
+    return None
+
+
 def collect_videos(base_cmd, ch):
     """Videos-tab mode: newest-first, keep only those under max_duration_seconds."""
     url = ch["url"].rstrip("/") + "/videos"
-    max_dur = ch.get("max_duration_seconds")  # None -> keep all
-    print("  scraping Videos tab (keeping "
-          + (f"< {max_dur // 60} min)…" if max_dur else "all)…"))
+    max_dur = ch.get("max_duration_seconds")   # None -> no duration limit
+    min_date = ch.get("min_date")              # "YYYYMMDD" -> only newer videos
+    min_date_int = int(min_date) if min_date else None
+    conds = []
+    if max_dur:
+        conds.append(f"< {max_dur // 60} min")
+    if min_date_int:
+        conds.append(f"on/after {min_date}")
+    print(f"  scraping Videos tab (keeping {', '.join(conds) if conds else 'all'})…")
     # approximate_date makes the fast flat scrape include upload dates.
     data = ytdlp_json(base_cmd, url, extra=[
         "--playlist-end", "300",
@@ -197,6 +234,10 @@ def collect_videos(base_cmd, ch):
         dur = v.get("duration")
         if max_dur and dur and dur > max_dur:
             continue  # skip long compilations
+        if min_date_int:
+            dk = date_key(v)
+            if dk is None or dk < min_date_int:
+                continue  # skip videos older than the cutoff (or undated)
         eps.append({
             "name": title,
             "videoId": v["id"],

@@ -1,37 +1,45 @@
 # Kids TV
 
 A simple Android TV app that lets a child watch a few chosen YouTube channels
-(Numberblocks, Kid Crew, Half-Asleep Chris) as a friendly, remote-navigable grid —
-playing each video in-app, with no browsing, no recommendations to wander into.
+(Numberblocks, Kid Crew, Half-Asleep Chris, David Rule) as a friendly,
+remote-navigable grid — playing each video in-app, with no ads, no browsing, and
+no recommendations to wander into.
 
 ## What's here
 
 - `build_catalog.py` — scrapes the channels into `catalog.json` (uses yt-dlp, no API key).
-- `update_kidcrew.py` — refreshes only Kid Crew (run nightly by the GitHub Action).
+- `update_kidcrew.py` — the nightly refresh; re-scrapes the channels flagged `auto_update`.
 - `preview.html` — open in a browser to preview the layout and check the data.
-- `kidstv-player.html` — the video player page; you host this on your website.
 - `android/` — the Android TV app (built by GitHub Actions into an APK you sideload).
+
+(`kidstv-player.html` is left over from an earlier web-based player and is no longer used.)
 
 ## How it works
 
-`catalog.json` is the content. The app fetches it from your GitHub repo at startup,
-so updating content never needs a new APK. Playback loads `kidstv-player.html` from
-your site (a real web page is required for the videos to play in the TV's web view).
-A nightly Action re-scrapes Kid Crew and republishes the catalog automatically;
-Numberblocks is scraped once and left alone.
+`catalog.json` is the content. The app fetches it from this GitHub repo at startup,
+so updating content never needs a new APK. Playback is native: when a video is
+selected the app extracts a stream on-device and plays it in ExoPlayer at 720p —
+which is what keeps it smooth and ad-free on an old TV. A nightly Action re-scrapes
+the `auto_update` channels and republishes the catalog; the others (e.g.
+Numberblocks) are scraped once and left frozen.
 
 ## One-time setup
 
-1. Host `kidstv-player.html` on your site (Hugo/blogdown: put it in `static/`), and
-   set `PLAYER_PAGE_URL` in `android/app/src/main/java/tv/childtv/app/PlaybackActivity.kt`.
-2. Make this GitHub repo public, and set `CATALOG_URL` in
-   `android/app/src/main/java/tv/childtv/app/CatalogRepository.kt` to your repo.
-3. Run `python build_catalog.py` once and commit the resulting `catalog.json`.
-4. Build the APK (GitHub **Actions → Build APK**), download the artifact, and
+1. Make this GitHub repo public, and set `CATALOG_URL` in
+   `android/app/src/main/java/tv/childtv/app/CatalogRepository.kt` to this repo.
+2. Run `python build_catalog.py` once and commit the resulting `catalog.json`.
+3. Build the APK (GitHub **Actions → Build APK**), download the artifact, and
    sideload it on the TV.
 
-## Updating
+## Adding or changing channels
 
-New Kid Crew videos appear on their own — the nightly **Update catalog** Action
-refreshes them. To change what's included, edit `build_catalog.py` (e.g. the
-`max_duration_seconds` filter) and re-run it.
+Edit the `CHANNELS` list in `build_catalog.py`:
+
+- `source` — how to scrape: `"videos"` (the channel's Videos tab) or `"playlists"`.
+- Optional filters — `max_duration_seconds` (drop long videos) and `min_date`
+  (only keep videos on/after a `YYYYMMDD` date).
+- `auto_update: True` — include the channel in the nightly refresh.
+
+Channels with `auto_update` update on their own each night. For anything else,
+re-run `build_catalog.py` and commit `catalog.json`. The app picks up changes with
+no rebuild; a rebuild is only needed for changes under `android/`.
