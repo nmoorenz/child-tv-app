@@ -25,9 +25,21 @@ android {
         jvmTarget = "17"
     }
 
+    signingConfigs {
+        // Fixed key so every build signs identically — updates install over the old
+        // app without needing to uninstall first. (Standard debug credentials.)
+        getByName("debug") {
+            storeFile = file("debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+    }
+
     buildTypes {
         getByName("debug") {
             isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("debug")
         }
         getByName("release") {
             isMinifyEnabled = false
@@ -58,5 +70,7 @@ dependencies {
     implementation("com.github.TeamNewPipe:NewPipeExtractor:v0.26.4")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
+    // Back-fills modern Java APIs onto old Android. (May bump to 2.1.x once we see
+    // the exact NoSuchMethodError, to cover more APIs.)
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 }

@@ -109,7 +109,9 @@ class PlaybackActivity : FragmentActivity() {
     }
 
     private fun showError(t: Throwable) {
-        statusText.text = getString(R.string.error_playback) + " (" + t.javaClass.simpleName + ")"
+        val detail = (t.message ?: t.javaClass.simpleName).take(180)
+        statusText.text = getString(R.string.error_playback) + "\n" +
+            t.javaClass.simpleName + ": " + detail
         statusText.visibility = View.VISIBLE
     }
 
