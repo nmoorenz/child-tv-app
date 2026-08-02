@@ -19,9 +19,13 @@ no recommendations to wander into.
 `catalog.json` is the content. The app fetches it from this GitHub repo at startup,
 so updating content never needs a new APK. Playback is native: when a video is
 selected the app extracts a stream on-device and plays it in ExoPlayer at 720p —
-which is what keeps it smooth and ad-free on an old TV. A nightly Action re-scrapes
-the `auto_update` channels and republishes the catalog; the others (e.g.
-Numberblocks) are scraped once and left frozen.
+which is what keeps it smooth and ad-free on an old TV.
+
+Video channels get **exact upload dates** via a full scrape. `build_catalog.py`
+(run locally) does the whole back-catalogue — this is slow. The nightly Action then
+only re-scrapes each channel's newest few videos (also exact) and merges them in,
+keeping the older exact dates already in `catalog.json`. Channels without
+`auto_update` (e.g. Numberblocks) are scraped once and left frozen.
 
 ## One-time setup
 

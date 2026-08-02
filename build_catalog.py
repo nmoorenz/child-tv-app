@@ -115,6 +115,12 @@ CHANNELS = [
 MAX_VIDEOS_PER_PLAYLIST = 200
 OUTPUT = Path(__file__).with_name("catalog.json")
 
+# How many videos to fully-extract per "videos" channel (full extraction = EXACT
+# upload dates, but slower). The local bootstrap does the whole back-catalogue;
+# the nightly job only refreshes the most recent ones and merges (see update_kidcrew).
+BOOTSTRAP_VIDEO_LIMIT = 400
+NIGHTLY_VIDEO_LIMIT = 5      # these channels post rarely; just catch new uploads
+
 SE_RE = re.compile(r"S\s*(\d+)\s*E\s*(\d+)", re.I)
 
 
@@ -132,9 +138,10 @@ def check_ytdlp():
         sys.exit(1)
 
 
-def ytdlp_json(base_cmd, url, extra=None):
-    cmd = base_cmd + ["--dump-single-json", "--flat-playlist",
-                      "--no-warnings", "--ignore-errors"]
+def ytdlp_json(base_cmd, url, extra=None, flat=True):
+    cmd = base_cmd + ["--dump-single-json", "--no-warnings", "--ignore-errors"]
+    if flat:
+        cmd.append("--flat-playlist")   # fast list only; no exact dates
     if extra:
         cmd += extra
     cmd.append(url)
@@ -207,8 +214,9 @@ def date_key(entry):
     return None
 
 
-def collect_videos(base_cmd, ch):
-    """Videos-tab mode: newest-first, keep only those under max_duration_seconds."""
+def collect_videos(base_cmd, ch, limit):
+    """Videos-tab mode: newest-first, EXACT dates (full extraction), up to `limit`
+    videos, filtered by max_duration_seconds / min_date."""
     url = ch["url"].rstrip("/") + "/videos"
     max_dur = ch.get("max_duration_seconds")   # None -> no duration limit
     min_date = ch.get("min_date")              # "YYYYMMDD" -> only newer videos
@@ -218,12 +226,10 @@ def collect_videos(base_cmd, ch):
         conds.append(f"< {max_dur // 60} min")
     if min_date_int:
         conds.append(f"on/after {min_date}")
-    print(f"  scraping Videos tab (keeping {', '.join(conds) if conds else 'all'})…")
-    # approximate_date makes the fast flat scrape include upload dates.
-    data = ytdlp_json(base_cmd, url, extra=[
-        "--playlist-end", "300",
-        "--extractor-args", "youtubetab:approximate_date",
-    ])
+    print(f"  scraping newest {limit} videos, exact dates "
+          f"(keeping {', '.join(conds) if conds else 'all'})… this is slow")
+    # Full (non-flat) extraction so each entry has an EXACT upload_date.
+    data = ytdlp_json(base_cmd, url, extra=["--playlist-end", str(limit)], flat=False)
     eps = []
     for v in (data or {}).get("entries") or []:
         if not v or not v.get("id"):
@@ -315,11 +321,11 @@ def discover_playlists(base_cmd, ch):
     return found
 
 
-def build_channel(base_cmd, ch):
+def build_channel(base_cmd, ch, videos_limit=BOOTSTRAP_VIDEO_LIMIT):
     print(f"\n== {ch['title']} ==")
 
     if ch.get("source") == "videos":
-        collection = collect_videos(base_cmd, ch)
+        collection = collect_videos(base_cmd, ch, videos_limit)
         collections = [collection] if collection["episodes"] else []
         total = len(collection["episodes"])
         print(f"  => 1 collection, {total} videos")
