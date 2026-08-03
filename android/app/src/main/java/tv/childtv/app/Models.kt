@@ -7,7 +7,8 @@ data class Episode(
     val videoId: String?,
     val thumbnail: String?,
     val url: String?,
-    val subtitle: String?
+    val subtitle: String?,
+    val durationText: String?
 )
 
 data class Season(

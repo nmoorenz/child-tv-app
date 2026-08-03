@@ -15,6 +15,7 @@ class CardPresenter : Presenter() {
         val title: TextView = view.findViewById(R.id.card_title)
         val subtitle: TextView = view.findViewById(R.id.card_subtitle)
         val progressFill: View = view.findViewById(R.id.progress_fill)
+        val durationBadge: TextView = view.findViewById(R.id.duration_badge)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
@@ -31,6 +32,8 @@ class CardPresenter : Presenter() {
         holder.title.text = ep.name
         holder.subtitle.text = ep.subtitle
             ?: if (ep.episode > 0) "Episode ${ep.episode}" else ""
+        holder.durationBadge.text = ep.durationText ?: ""
+        holder.durationBadge.visibility = if (ep.durationText.isNullOrEmpty()) View.GONE else View.VISIBLE
 
         val thumb = ep.thumbnail
             ?: ep.videoId?.let { "https://i.ytimg.com/vi/$it/hqdefault.jpg" }

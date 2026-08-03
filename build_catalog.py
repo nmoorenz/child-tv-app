@@ -86,6 +86,7 @@ CHANNELS = [
         "source": "videos",
         "max_duration_seconds": 1800,  # 30 minutes
         "auto_update": True,           # refreshed by the nightly job
+        "exact_dates": False,          # this channel won't full-extract; use fast list
     },
     {
         "id": "halfasleepchris",
@@ -93,7 +94,7 @@ CHANNELS = [
         "url": "https://www.youtube.com/@HalfAsleepChris",
         "color": "#6c5ce7",
         "source": "videos",
-        # no max_duration_seconds -> keep all of his videos
+        "min_date": "20201210",        # only videos on/after 10 Dec 2020
         "auto_update": True,           # refreshed by the nightly job
     },
     {
@@ -157,6 +158,31 @@ def ytdlp_json(base_cmd, url, extra=None, flat=True):
         return None
 
 
+def ytdlp_video_stream(base_cmd, url, extra=None):
+    """Full extraction that STREAMS one JSON per video, printing each as it arrives
+    so you can watch progress. Returns a list of entry dicts."""
+    cmd = base_cmd + ["--dump-json", "--no-warnings", "--ignore-errors"]
+    if extra:
+        cmd += extra
+    cmd.append(url)
+    entries = []
+    # stderr is left attached to the terminal so throttling/errors are visible.
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, text=True, bufsize=1)
+    for line in proc.stdout:
+        line = line.strip()
+        if not line.startswith("{"):
+            continue
+        try:
+            v = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        entries.append(v)
+        title = (v.get("title") or "")[:60]
+        print(f"      [{len(entries):>3}] {hms(v.get('duration')):>8}  {title}")
+    proc.wait()
+    return entries
+
+
 def thumb(vid):
     return f"https://i.ytimg.com/vi/{vid}/hqdefault.jpg"
 
@@ -215,8 +241,13 @@ def date_key(entry):
 
 
 def collect_videos(base_cmd, ch, limit):
-    """Videos-tab mode: newest-first, EXACT dates (full extraction), up to `limit`
-    videos, filtered by max_duration_seconds / min_date."""
+    """Videos-tab mode: newest-first, up to `limit` videos, filtered by
+    max_duration_seconds / min_date.
+
+    Primary path is a full extraction (EXACT upload dates). Some channels (e.g. a
+    "made for kids" channel) won't full-extract through yt-dlp even though the videos
+    play fine elsewhere; if that comes back empty we fall back to the fast list
+    (approximate dates) so the channel is never empty."""
     url = ch["url"].rstrip("/") + "/videos"
     max_dur = ch.get("max_duration_seconds")   # None -> no duration limit
     min_date = ch.get("min_date")              # "YYYYMMDD" -> only newer videos
@@ -226,33 +257,56 @@ def collect_videos(base_cmd, ch, limit):
         conds.append(f"< {max_dur // 60} min")
     if min_date_int:
         conds.append(f"on/after {min_date}")
-    print(f"  scraping newest {limit} videos, exact dates "
-          f"(keeping {', '.join(conds) if conds else 'all'})… this is slow")
-    # Full (non-flat) extraction so each entry has an EXACT upload_date.
-    data = ytdlp_json(base_cmd, url, extra=["--playlist-end", str(limit)], flat=False)
-    eps = []
-    for v in (data or {}).get("entries") or []:
-        if not v or not v.get("id"):
-            continue
-        title = v.get("title")
-        if not title:
-            continue
-        dur = v.get("duration")
-        if max_dur and dur and dur > max_dur:
-            continue  # skip long compilations
-        if min_date_int:
-            dk = date_key(v)
-            if dk is None or dk < min_date_int:
-                continue  # skip videos older than the cutoff (or undated)
-        eps.append({
-            "name": title,
-            "videoId": v["id"],
-            "thumbnail": thumb(v["id"]),
-            "url": f"https://www.youtube.com/watch?v={v['id']}",
-            "duration": int(dur) if dur else None,
-            "subtitle": video_date(v),  # date shown on the card
-        })
-    print(f"      {len(eps)} videos kept")
+    print(f"  scraping newest {limit} videos "
+          f"(keeping {', '.join(conds) if conds else 'all'})…")
+
+    def build(entries):
+        over = before = 0
+        out = []
+        for v in entries:
+            if not v or not v.get("id") or not v.get("title"):
+                continue
+            dur = v.get("duration")
+            if max_dur and dur and dur > max_dur:
+                over += 1
+                continue
+            if min_date_int:
+                dk = date_key(v)
+                if dk is None or dk < min_date_int:
+                    before += 1
+                    continue
+            out.append({
+                "name": v["title"],
+                "videoId": v["id"],
+                "thumbnail": thumb(v["id"]),
+                "url": f"https://www.youtube.com/watch?v={v['id']}",
+                "duration": int(dur) if dur else None,
+                "durationText": hms(dur),
+                "subtitle": video_date(v),   # exact if full extraction, else approximate
+            })
+        return out, over, before
+
+    # Primary: full extraction (streamed, exact dates) — unless the channel opts out
+    # (exact_dates: False) because it can't be full-extracted.
+    eps, over, before = [], 0, 0
+    if ch.get("exact_dates", True):
+        eps, over, before = build(ytdlp_video_stream(
+            base_cmd, url, extra=["--playlist-end", str(limit)]))
+
+    # Fast list (approximate dates): used directly when exact_dates is False, or as a
+    # fallback if the full extraction came back empty, so the channel is never empty.
+    if not eps:
+        if ch.get("exact_dates", True):
+            print("      full extraction returned nothing — falling back to the fast list")
+        else:
+            print("      using the fast list (approximate dates)")
+        data = ytdlp_json(base_cmd, url, extra=[
+            "--playlist-end", str(limit),
+            "--extractor-args", "youtubetab:approximate_date",
+        ])
+        eps, over, before = build((data or {}).get("entries") or [])
+
+    print(f"      {over} over-length · {before} before cutoff · {len(eps)} kept")
     # Videos tab is already newest-first (reverse chronological).
     return {
         "id": "latest",
@@ -295,6 +349,7 @@ def collect_playlist(base_cmd, pl):
             "thumbnail": thumb(v["id"]),
             "url": f"https://www.youtube.com/watch?v={v['id']}",
             "duration": v.get("duration"),
+            "durationText": hms(v.get("duration")),
         })
     # order: by (season, episode) when tags exist, else keep playlist order
     if all(e["season"] is not None and e["episode"] is not None for e in eps) and eps:

@@ -57,6 +57,9 @@
     border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .12s,border-color .12s;
     outline:none}
   .tile .thumb{width:100%;height:118px;display:block;object-fit:cover;background:#0b0e1a}
+  .thumbwrap{position:relative;line-height:0}
+  .dur{position:absolute;right:6px;bottom:6px;background:rgba(0,0,0,.8);color:#fff;
+    font-size:11px;font-weight:700;padding:1px 6px;border-radius:4px;line-height:1.3}
   .tile .meta{padding:10px 12px}
   .tile .ep{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.4px}
   .tile .t{font-size:14px;font-weight:700;line-height:1.25;margin-top:3px;
@@ -179,8 +182,8 @@ const SAMPLE = {
     youtubeChannelId:"UCPlwvN0w4qFSP1FllALB92w",
     collections:[
       { id:"s1", title:"Season 1", color:"#d11f1f", episodes:[
-        {episode:1,title:"One",n:1},
-        {episode:2,title:"Another One",n:2},
+        {episode:1,title:"One",n:1,durationText:"3:14"},
+        {episode:2,title:"Another One",n:2,durationText:"3:05"},
         {episode:3,title:"Two",n:2},
         {episode:7,title:"Five",n:5},
         {episode:15,title:"Hide and Seek",n:5},
@@ -228,9 +231,9 @@ const SAMPLE = {
     id:"kidcrew", title:"Kid Crew", color:"#00a3e0", layout:"grid",
     collections:[
       { id:"latest", title:"Kid Crew", color:"#00a3e0", episodes:[
-        {title:"Kid Crew — Fun Song for Kids to Sing Along (sample)", date:"18 Jul 2025"},
-        {title:"Kid Crew — Story Time: The Little Red Hen (sample)", date:"11 Jul 2025"},
-        {title:"Kid Crew — Learning Colours with Paint (sample)", date:"4 Jul 2025"},
+        {title:"Kid Crew — Fun Song for Kids to Sing Along (sample)", date:"18 Jul 2025", durationText:"9:41"},
+        {title:"Kid Crew — Story Time: The Little Red Hen (sample)", date:"11 Jul 2025", durationText:"6:18"},
+        {title:"Kid Crew — Learning Colours with Paint (sample)", date:"4 Jul 2025", durationText:"12:03"},
         {title:"Kid Crew — Playground Adventure Day Out (sample)", date:"27 Jun 2025"},
         {title:"Kid Crew — Counting Game: How Many Apples? (sample)", date:"20 Jun 2025"},
         {title:"Kid Crew — Animal Sounds Around the Farm (sample)", date:"13 Jun 2025"},
@@ -301,6 +304,7 @@ function normalizeCatalog(cat){
         url:e.url||null,
         description:e.description||"",
         subtitle:e.subtitle||e.date||"",
+        durationText:e.durationText||fmtDur(e.duration),
         n:e.n||e.season||(isNaN(numGuess)?(i+1):numGuess)
       };
     });
@@ -329,6 +333,17 @@ function thumbFor(ep){
   if(ep.videoId) return `https://i.ytimg.com/vi/${ep.videoId}/hqdefault.jpg`;
   return placeholder(ep.n, ep.title);
 }
+function fmtDur(sec){
+  if(!sec) return ""; sec=Math.floor(sec);
+  const h=Math.floor(sec/3600), m=Math.floor((sec%3600)/60), s=sec%60;
+  const pad=n=>String(n).padStart(2,'0');
+  return h ? `${h}:${pad(m)}:${pad(s)}` : `${m}:${pad(s)}`;
+}
+function thumbHtml(ep){
+  return `<div class="thumbwrap"><img class="thumb" src="${thumbFor(ep)}" alt="" loading="lazy"
+      onerror="this.src='${placeholder(ep.n,ep.title)}'">`
+    + (ep.durationText?`<div class="dur">${ep.durationText}</div>`:'') + `</div>`;
+}
 function linkFor(ep){
   if(ep.url) return ep.url;
   if(ep.videoId) return `https://www.youtube.com/watch?v=${ep.videoId}`;
@@ -354,9 +369,8 @@ function renderTV(){
       const tile=document.createElement("div");
       tile.className="tile"; tile.tabIndex=(ci===0&&ei===0)?0:-1;
       tile.dataset.r=ci; tile.dataset.c=ei;
-      tile.innerHTML=`<img class="thumb" src="${thumbFor(ep)}" alt="" loading="lazy"
-          onerror="this.src='${placeholder(ep.n,ep.title)}'">
-        <div class="meta">${ep.episode>0?`<div class="ep">EP ${ep.episode}</div>`:''}
+      tile.innerHTML=thumbHtml(ep)
+        + `<div class="meta">${ep.episode>0?`<div class="ep">EP ${ep.episode}</div>`:''}
         <div class="t">${ep.title}</div></div>`;
       tile.addEventListener("click",()=>openModal(ep,col));
       tile.addEventListener("keydown",e=>onTileKey(e,ci,ei));
@@ -377,10 +391,9 @@ function renderGrid(ch, rows){
     const {ep,col}=it;
     const tile=document.createElement("div");
     tile.className="tile wide"; tile.tabIndex=i===0?0:-1; tile.dataset.i=i;
-    tile.innerHTML=`<img class="thumb" src="${thumbFor(ep)}" alt="" loading="lazy"
-        onerror="this.src='${placeholder(ep.n,ep.title)}'">
-      <div class="meta"><div class="t">${ep.title}</div>
-      ${ep.subtitle?`<div class="date">${ep.subtitle}</div>`:''}</div>`;
+    tile.innerHTML=thumbHtml(ep)
+      + `<div class="meta"><div class="t">${ep.title}</div>`
+      + (ep.subtitle?`<div class="date">${ep.subtitle}</div>`:'') + `</div>`;
     tile.addEventListener("click",()=>openModal(ep,col));
     tile.addEventListener("keydown",e=>onGridKey(e,i,wrap));
     wrap.appendChild(tile);

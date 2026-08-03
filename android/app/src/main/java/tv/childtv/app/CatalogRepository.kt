@@ -137,7 +137,8 @@ object CatalogRepository {
                     videoId = e.optStringOrNull("videoId"),
                     thumbnail = e.optStringOrNull("thumbnail"),
                     url = e.optStringOrNull("url"),
-                    subtitle = e.optStringOrNull("subtitle")
+                    subtitle = e.optStringOrNull("subtitle"),
+                    durationText = e.optStringOrNull("durationText")
                 )
             )
         }
