@@ -34,11 +34,13 @@ ADD / CHANGE WHAT'S INCLUDED
 """
 
 import datetime
+import difflib
 import json
 import re
 import subprocess
 import sys
 import shutil
+import urllib.request
 from pathlib import Path
 
 # ------------------------------------------------------------------
@@ -105,6 +107,37 @@ CHANNELS = [
         "source": "videos",
         "min_date": "20220601",  # only videos on/after 1 June 2022
         "auto_update": True,     # refreshed by the nightly job
+    },
+    {
+        "id": "postmanpat",
+        "title": "Postman Pat",
+        "url": "https://www.youtube.com/@PostmanPat",
+        "color": "#2e8b57",
+        "source": "videos",
+        "wiki": "postman_pat",          # match titles to Wikipedia -> Series/Episode
+        "min_duration_seconds": 750,    # 12:30
+        "max_duration_seconds": 1140,   # ~19:00 (include slightly-long episodes)
+        "play_cap_seconds": 900,        # hard-stop playback at 15:00
+        "dedupe": True,
+        # Built by its own one-time pipeline (postman_pat_metadata.py ->
+        # match_postman_pat.py -> build_postman_pat.py) from the full ~1300-video
+        # channel, not the 400-latest scrape. "manual" keeps build_catalog.py from
+        # overwriting it on a normal run.
+        "manual": True,
+    },
+    {
+        "id": "octonauts",
+        "title": "Octonauts",
+        "url": "https://www.youtube.com/@Octonauts",
+        "color": "#1e6fb8",
+        "source": "videos",
+        "min_duration_seconds": 598,    # 9:58
+        "max_duration_seconds": 616,    # 10:16
+        "dedupe": True,
+        # Built by its own one-time pipeline: channel_to_csv.py (trim by hand) ->
+        # dedupe_octonauts.py -> build_octonauts.py. Emoji kept, grouped into
+        # "Season N" rows by episode. "manual" keeps a normal run from clobbering it.
+        "manual": True,
     },
 ]
 
@@ -238,6 +271,212 @@ def date_key(entry):
             except (ValueError, TypeError, OSError):
                 pass
     return None
+
+
+# ------------------------------------------------------------------
+# Wikipedia matching + title cleaning (used by "grouped" video channels
+# like Postman Pat, whose episodes are grouped into series).
+# ------------------------------------------------------------------
+WIKI_URLS = {
+    "postman_pat":
+        "https://en.wikipedia.org/wiki/List_of_Postman_Pat_episodes?action=raw",
+}
+
+
+def norm_title(s):
+    """Normalise a title for fuzzy matching."""
+    s = (s or "").lower().replace("’", "'").replace("&", "and")
+    s = re.sub(r"[^a-z0-9]+", " ", s).strip()
+    return s
+
+
+def _clean_wiki_title(t):
+    t = re.sub(r"<ref[^>]*>.*?</ref>", "", t, flags=re.S)
+    t = re.sub(r"<ref[^>]*/>", "", t)
+    t = re.sub(r"\{\{[^{}]*\}\}", "", t)
+    t = re.sub(r"\[\[[^\]|]*\|([^\]]*)\]\]", r"\1", t)
+    t = re.sub(r"\[\[([^\]]*)\]\]", r"\1", t)
+    return t.replace("''", "").strip().strip('"').strip()
+
+
+def load_wiki_episodes(which):
+    """Fetch a Wikipedia episode list and return [{series, episode, title}]."""
+    url = WIKI_URLS.get(which)
+    if not url:
+        return []
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "kids-tv-catalog"})
+        text = urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
+    except Exception as e:  # noqa: BLE001
+        print(f"  ! could not fetch Wikipedia ({e})", file=sys.stderr)
+        return []
+    eps = []
+    parts = re.split(r"===+\s*Series\s+(\d+)[^=]*===+", text)
+    for i in range(1, len(parts), 2):
+        series = int(parts[i])
+        body = parts[i + 1]
+        for m in re.finditer(r"\|\s*EpisodeNumber2\s*=\s*(\d+).*?\|\s*Title\s*=\s*([^\n|]+)",
+                             body, re.S):
+            title = _clean_wiki_title(m.group(2))
+            if title:
+                eps.append({"series": series, "episode": int(m.group(1)), "title": title})
+    return eps
+
+
+# YouTube titles are like: "Postman Pat | Postman Pat on The Road | Full Episodes |
+# Cartoons for Kids". We want just the episode name.
+_TITLE_BOILERPLATE = ("full episode", "episode", "cartoon", "kids", "official",
+                      "compilation", "videos", "special delivery service",
+                      "for children", "series")
+
+
+def clean_episode_title(raw):
+    segs = [s.strip() for s in raw.split("|") if s.strip()]
+    if not segs:
+        return raw.strip()
+
+    def is_boiler(s):
+        low = s.lower().strip()
+        if low in ("postman pat", "postman pat!"):
+            return True
+        return any(b in low for b in _TITLE_BOILERPLATE)
+
+    kept = [s for s in segs if not is_boiler(s)]
+    return kept[0] if kept else max(segs, key=len)
+
+
+# Emoji / pictograph ranges (keeps normal punctuation). Used to strip emoji from
+# titles, or to build emoji-insensitive keys for de-duplication.
+_EMOJI_RE = re.compile(
+    "["
+    "\U0001F000-\U0001FAFF"   # emoticons, pictographs, transport, supplemental, cards
+    "\U00002600-\U000026FF"   # miscellaneous symbols
+    "\U00002700-\U000027BF"   # dingbats
+    "\U0001F1E6-\U0001F1FF"   # regional indicator letters (flags)
+    "\U00002B00-\U00002BFF"   # miscellaneous symbols and arrows
+    "\U00002300-\U000023FF"   # misc technical (hourglass, etc.)
+    "\U0001F3FB-\U0001F3FF"   # skin-tone modifiers
+    "\U000E0000-\U000E007F"   # tag characters (used in flag sequences)
+    "]+",
+    flags=re.UNICODE,
+)
+
+
+def strip_emoji(s):
+    s = _EMOJI_RE.sub("", s or "")
+    s = s.replace("‍", "").replace("️", "")   # ZWJ + variation selector
+    s = re.sub(r"\s{2,}", " ", s).strip()
+    return s.strip(" -–—|").strip()
+
+
+# Octonauts titles look like:
+#   "🦁 The Lion's mane Jellyfish 🪼 | Season 3 | Full Episodes | Cartoons for Kids"
+# Keep the episode NAME exactly (first "|" segment, emoji and all) and read the
+# season and episode numbers out of the title. Returns (name, season, episode);
+# season/episode are None when not present. Unlike Postman Pat, emoji are kept.
+def clean_octonauts_title(raw):
+    text = raw or ""
+    season = episode = None
+    m = re.search(r"\bs(\d+)\s*e\s*(\d+)\b", text, re.I)       # S3 E5 / S3E5 -> both
+    if m:
+        season, episode = int(m.group(1)), int(m.group(2))
+    if season is None:
+        m = re.search(r"season\s+(\d+)", text, re.I)           # Season 3
+        if m:
+            season = int(m.group(1))
+    if episode is None:
+        m = (re.search(r"\bepisode\s*(\d+)\b", text, re.I)     # Episode 5
+             or re.search(r"\bep\.?\s*(\d+)\b", text, re.I))   # Ep 5 / Ep. 5
+        if m:
+            episode = int(m.group(1))
+    name = text.split("|")[0]
+    # Drop a leading channel-name prefix: "Octonauts - " or "@Octonauts - " etc.
+    name = re.sub(r"^\s*@?octonauts\b\s*[-–—:]+\s*", "", name, flags=re.I)
+    return name.strip(), season, episode
+
+
+def build_grouped_videos_channel(base_cmd, ch, limit):
+    """Videos-tab channel whose episodes are matched to a Wikipedia list and grouped
+    into Series. Cleans titles, de-dupes, applies a duration window, and (for the
+    slightly-too-long items) records a playback cap."""
+    url = ch["url"].rstrip("/") + "/videos"
+    min_dur = ch.get("min_duration_seconds", 0)
+    max_dur = ch.get("max_duration_seconds")
+    cap = ch.get("play_cap_seconds")
+    print(f"  scraping newest {limit} videos, grouping into series "
+          f"(keep {min_dur}-{max_dur}s, cap {cap}s)…")
+
+    data = ytdlp_json(base_cmd, url, extra=[
+        "--playlist-end", str(limit),
+        "--extractor-args", "youtubetab:approximate_date",
+    ])
+    entries = (data or {}).get("entries") or []
+
+    wiki = load_wiki_episodes(ch.get("wiki"))
+    wiki_index = {norm_title(w["title"]): w for w in wiki}
+    wiki_norms = list(wiki_index.keys())
+    print(f"      {len(wiki)} Wikipedia episodes loaded")
+
+    seen = set()
+    matched = {}            # (series, episode) -> ep
+    others = []
+    kept = dropped = 0
+    for v in entries:
+        if not v or not v.get("id") or not v.get("title"):
+            continue
+        dur = v.get("duration")
+        if dur is None or dur < min_dur or (max_dur and dur > max_dur):
+            dropped += 1
+            continue
+        name = clean_episode_title(v["title"])
+        key = norm_title(name)
+        if ch.get("dedupe") and key in seen:
+            continue
+        seen.add(key)
+        kept += 1
+        ep = {
+            "name": name,
+            "videoId": v["id"],
+            "thumbnail": thumb(v["id"]),
+            "url": f"https://www.youtube.com/watch?v={v['id']}",
+            "duration": int(dur),
+            "durationText": hms(dur),
+            "subtitle": video_date(v),
+        }
+        if cap and dur > cap:
+            ep["capSeconds"] = cap
+        w = wiki_index.get(key)
+        if not w:
+            close = difflib.get_close_matches(key, wiki_norms, n=1, cutoff=0.86)
+            if close:
+                w = wiki_index[close[0]]
+        if w:
+            ep["season"] = w["series"]
+            ep["episode"] = w["episode"]
+            ep["episode_index"] = w["episode"]
+            ep["subtitle"] = f"Episode {w['episode']}"
+            matched.setdefault((w["series"], w["episode"]), ep)  # de-dupe by S/E
+        else:
+            others.append(ep)
+
+    collections = []
+    for s in sorted({se[0] for se in matched}):
+        eps = sorted((e for k, e in matched.items() if k[0] == s),
+                     key=lambda x: x["episode"])
+        collections.append({"id": f"series-{s}", "title": f"Series {s}", "episodes": eps})
+    if others:
+        collections.append({"id": "other", "title": "Other", "episodes": others})
+
+    print(f"      {kept} kept, {dropped} outside window, "
+          f"{sum(len(c['episodes']) for c in collections if c['id'] != 'other')} matched "
+          f"to a series, {len(others)} unmatched")
+    return {
+        "id": ch["id"],
+        "title": ch["title"],
+        "youtubeChannelId": ch.get("youtubeChannelId"),
+        "color": ch.get("color", "#4a6cf7"),
+        "collections": collections,   # no "grid" layout -> rows per series
+    }
 
 
 def collect_videos(base_cmd, ch, limit):
@@ -379,6 +618,9 @@ def discover_playlists(base_cmd, ch):
 def build_channel(base_cmd, ch, videos_limit=BOOTSTRAP_VIDEO_LIMIT):
     print(f"\n== {ch['title']} ==")
 
+    if ch.get("source") == "videos" and ch.get("wiki"):
+        return build_grouped_videos_channel(base_cmd, ch, videos_limit)
+
     if ch.get("source") == "videos":
         collection = collect_videos(base_cmd, ch, videos_limit)
         collections = [collection] if collection["episodes"] else []
@@ -419,8 +661,28 @@ def build_channel(base_cmd, ch, videos_limit=BOOTSTRAP_VIDEO_LIMIT):
 
 def main():
     base_cmd = check_ytdlp()
+    # Preserve any manually-built channels (e.g. Postman Pat) already in catalog.json
+    # so a normal run doesn't clobber them.
+    existing = {}
+    if OUTPUT.exists():
+        try:
+            for c in json.loads(OUTPUT.read_text(encoding="utf-8")).get("channels", []):
+                if c.get("id"):
+                    existing[c["id"]] = c
+        except (json.JSONDecodeError, OSError):
+            pass
+
     catalog = {"generatedWith": "build_catalog.py", "channels": []}
     for ch in CHANNELS:
+        if ch.get("manual"):
+            kept = existing.get(ch["id"])
+            if kept:
+                print(f"\n== {ch['title']} == (manual — keeping existing catalog entry)")
+                catalog["channels"].append(kept)
+            else:
+                print(f"\n== {ch['title']} == (manual — not built yet, skipping; "
+                      f"run its own pipeline)")
+            continue
         catalog["channels"].append(build_channel(base_cmd, ch))
     OUTPUT.write_text(json.dumps(catalog, indent=2, ensure_ascii=False),
                       encoding="utf-8")

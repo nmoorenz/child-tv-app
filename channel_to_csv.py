@@ -85,16 +85,22 @@ def looks_like_compilation(title, seconds):
 
 
 def main():
-    channel = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_CHANNEL
-    videos_url = channel.rstrip("/")
-    if not videos_url.endswith("/videos"):
-        videos_url += "/videos"
+    target = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_CHANNEL
+    if "list=" in target or "/playlist" in target:      # a playlist URL
+        scrape_url = target
+        m = re.search(r"list=([A-Za-z0-9_-]+)", target)
+        out_name = f"playlist_{m.group(1) if m else 'x'}_videos.csv"
+    else:                                               # a channel
+        scrape_url = target.rstrip("/")
+        if not scrape_url.endswith("/videos"):
+            scrape_url += "/videos"
+        out_name = f"{channel_slug(target)}_videos.csv"
 
     base_cmd = check_ytdlp()
-    print(f"Scraping {videos_url} … (this can take a minute)")
+    print(f"Scraping {scrape_url} … (this can take a minute)")
 
     cmd = base_cmd + ["--flat-playlist", "--dump-single-json",
-                      "--no-warnings", "--ignore-errors", videos_url]
+                      "--no-warnings", "--ignore-errors", scrape_url]
     proc = subprocess.run(cmd, capture_output=True, text=True)
     if not proc.stdout.strip():
         print("yt-dlp returned nothing:\n" + proc.stderr[:500], file=sys.stderr)
@@ -103,7 +109,6 @@ def main():
     data = json.loads(proc.stdout)
     entries = [e for e in (data.get("entries") or []) if e and e.get("id")]
 
-    out_name = f"{channel_slug(channel)}_videos.csv"
     with open(out_name, "w", newline="", encoding="utf-8-sig") as f:
         w = csv.writer(f)
         w.writerow([

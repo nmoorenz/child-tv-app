@@ -138,7 +138,9 @@ object CatalogRepository {
                     thumbnail = e.optStringOrNull("thumbnail"),
                     url = e.optStringOrNull("url"),
                     subtitle = e.optStringOrNull("subtitle"),
-                    durationText = e.optStringOrNull("durationText")
+                    durationText = e.optStringOrNull("durationText"),
+                    capSeconds = if (e.has("capSeconds") && !e.isNull("capSeconds"))
+                        e.optInt("capSeconds") else null
                 )
             )
         }

@@ -8,7 +8,8 @@ data class Episode(
     val thumbnail: String?,
     val url: String?,
     val subtitle: String?,
-    val durationText: String?
+    val durationText: String?,
+    val capSeconds: Int?          // stop playback at this time (trims junk at the end)
 )
 
 data class Season(

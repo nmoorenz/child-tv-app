@@ -37,6 +37,7 @@ class MainFragment : BrowseSupportFragment() {
                     val intent = Intent(requireContext(), PlaybackActivity::class.java)
                     intent.putExtra(PlaybackActivity.EXTRA_VIDEO_ID, item.videoId)
                     intent.putExtra(PlaybackActivity.EXTRA_TITLE, item.name)
+                    intent.putExtra(PlaybackActivity.EXTRA_CAP_SECONDS, item.capSeconds ?: 0)
                     startActivity(intent)
                 }
                 is ChannelItem -> if (item.enabled && item.id != currentChannelId) {

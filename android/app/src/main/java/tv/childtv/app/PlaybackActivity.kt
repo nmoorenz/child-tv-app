@@ -13,6 +13,7 @@ import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.ClippingMediaSource
 import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.source.MergingMediaSource
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
@@ -30,6 +31,7 @@ class PlaybackActivity : FragmentActivity() {
     private lateinit var playerView: PlayerView
     private lateinit var statusText: TextView
     private var videoId: String? = null
+    private var capSeconds = 0
     private var finished = false
 
     private val handler = Handler(Looper.getMainLooper())
@@ -56,6 +58,7 @@ class PlaybackActivity : FragmentActivity() {
             return
         }
         videoId = id
+        capSeconds = intent.getIntExtra(EXTRA_CAP_SECONDS, 0)
 
         // Resolve the stream off the main thread, then play on the main thread.
         Thread {
@@ -74,12 +77,16 @@ class PlaybackActivity : FragmentActivity() {
         val dataSourceFactory = OkHttpDataSource.Factory(TrustAllHttp.client)
         val videoSource = ProgressiveMediaSource.Factory(dataSourceFactory)
             .createMediaSource(MediaItem.fromUri(streams.videoUrl))
-        val mediaSource: MediaSource = if (streams.audioUrl != null) {
+        var mediaSource: MediaSource = if (streams.audioUrl != null) {
             val audioSource = ProgressiveMediaSource.Factory(dataSourceFactory)
                 .createMediaSource(MediaItem.fromUri(streams.audioUrl))
             MergingMediaSource(videoSource, audioSource)
         } else {
             videoSource
+        }
+        // Hard-stop at capSeconds (trims junk footage at the end of some episodes).
+        if (capSeconds > 0) {
+            mediaSource = ClippingMediaSource(mediaSource, 0L, capSeconds * 1_000_000L)
         }
 
         val exo = ExoPlayer.Builder(this).build()
@@ -136,5 +143,6 @@ class PlaybackActivity : FragmentActivity() {
     companion object {
         const val EXTRA_VIDEO_ID = "videoId"
         const val EXTRA_TITLE = "title"
+        const val EXTRA_CAP_SECONDS = "capSeconds"
     }
 }
