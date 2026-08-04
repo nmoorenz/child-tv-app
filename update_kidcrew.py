@@ -22,8 +22,13 @@ OUTPUT = Path(__file__).with_name("catalog.json")
 
 
 def merge_recent(fresh_channel, existing_channel):
-    """Recent exact episodes first, then the older tail already in the catalog
-    (dedup by videoId) so history and older exact dates are preserved."""
+    """Recent episodes first, then the older tail already in the catalog (dedup by
+    videoId) so history and older dates are preserved.
+
+    Dates are FROZEN: if a video is already in the catalog, we keep its stored date
+    (subtitle) instead of the freshly-scraped one. Channels that can't be fully
+    extracted (e.g. Kid Crew) only get approximate, relative-to-today dates from the
+    nightly scrape, which would otherwise drift on every run."""
     if not fresh_channel.get("collections"):
         # Nightly scrape returned nothing — keep what we already had.
         return existing_channel or fresh_channel
@@ -32,6 +37,13 @@ def merge_recent(fresh_channel, existing_channel):
     existing_eps = []
     if existing_channel and existing_channel.get("collections"):
         existing_eps = existing_channel["collections"][0].get("episodes", [])
+
+    # Keep the date we first captured for any video already in the catalog.
+    existing_by_id = {e.get("videoId"): e for e in existing_eps}
+    for e in fresh_eps:
+        prev = existing_by_id.get(e.get("videoId"))
+        if prev and prev.get("subtitle"):
+            e["subtitle"] = prev["subtitle"]
 
     fresh_ids = {e.get("videoId") for e in fresh_eps}
     tail = [e for e in existing_eps if e.get("videoId") not in fresh_ids]
