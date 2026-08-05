@@ -1,5 +1,5 @@
 {
-  "generatedWith": "build_catalog.py",
+  "generatedWith": "update_kidcrew.py",
   "channels": [
     {
       "id": "numberblocks",
@@ -3176,8 +3176,8 @@
               "videoId": "PHaGGkIKEQE",
               "thumbnail": "https://i.ytimg.com/vi/PHaGGkIKEQE/hqdefault.jpg",
               "url": "https://www.youtube.com/watch?v=PHaGGkIKEQE",
-              "duration": 416,
-              "durationText": "6:56",
+              "duration": 417,
+              "durationText": "6:57",
               "subtitle": "25 Jul 2026"
             },
             {
@@ -3203,8 +3203,8 @@
               "videoId": "a5YXBwc7fAg",
               "thumbnail": "https://i.ytimg.com/vi/a5YXBwc7fAg/hqdefault.jpg",
               "url": "https://www.youtube.com/watch?v=a5YXBwc7fAg",
-              "duration": 413,
-              "durationText": "6:53",
+              "duration": 414,
+              "durationText": "6:54",
               "subtitle": "20 Jun 2026"
             },
             {
@@ -3212,8 +3212,8 @@
               "videoId": "U4bUOT0A84M",
               "thumbnail": "https://i.ytimg.com/vi/U4bUOT0A84M/hqdefault.jpg",
               "url": "https://www.youtube.com/watch?v=U4bUOT0A84M",
-              "duration": 590,
-              "durationText": "9:50",
+              "duration": 591,
+              "durationText": "9:51",
               "subtitle": "23 May 2026"
             },
             {
@@ -3948,8 +3948,8 @@
               "videoId": "PZ4EW6sO8gI",
               "thumbnail": "https://i.ytimg.com/vi/PZ4EW6sO8gI/hqdefault.jpg",
               "url": "https://www.youtube.com/watch?v=PZ4EW6sO8gI",
-              "duration": 2459,
-              "durationText": "40:59",
+              "duration": 2460,
+              "durationText": "41:00",
               "subtitle": "2 May 2026"
             },
             {
