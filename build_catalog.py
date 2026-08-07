@@ -1,16 +1,21 @@
 #!/usr/bin/env python3
 """
-build_catalog.py  —  Numberblocks (and friends) catalog builder.
+build_catalog.py  —  catalog builder + shared library.
 
-Scrapes the official Numberblocks YouTube channel with yt-dlp
-(NO API key required) and writes catalog.json — the single file the
-preview.html page and the Android TV app both read.
+Two jobs:
+  1. Bootstrap the "videos" channels (Kid Crew, Half-Asleep Chris, David Rule)
+     into catalog.json with a full local scrape (exact dates). The nightly job
+     (update_nightly.py) then refreshes only their newest few videos.
+  2. Act as the shared library that every other script imports: the yt-dlp
+     wrappers, date/duration/thumbnail helpers, emoji + title cleaners, the
+     Wikipedia loader, and register_manual_stub().
 
-It pulls the channel's eight official "FULL EPISODES" season playlists
-(Season 1 through Season 8, ~180 complete episodes) and uses each as a
-"Season N" collection your child browses. Every episode's YouTube title
-carries a "S# E#" tag (e.g. "Grid Unlocked | S7 E1 | ... - Full Episode"),
-which this script parses to order episodes and show a clean episode name.
+Channels flagged "manual": True are built by their own one-off scripts and are
+preserved here, never rebuilt:
+  - Numberblocks   -> build_numberblocks.py  (season playlists)
+  - Postman Pat    -> postman_pat_metadata.py -> match_postman_pat.py -> build_postman_pat.py
+  - Octonauts      -> channel_to_csv.py -> dedupe_octonauts.py -> build_octonauts.py
+  - anything else  -> channel_metadata.py -> build_from_csv.py
 
 --------------------------------------------------------------------
 SETUP (one time)
@@ -24,13 +29,6 @@ RUN
 --------------------------------------------------------------------
       python build_catalog.py
   Output: catalog.json  (next to this script)
-
---------------------------------------------------------------------
-ADD / CHANGE WHAT'S INCLUDED
---------------------------------------------------------------------
-  Edit the CHANNELS list below. Each channel lists the playlists to
-  pull (by playlist ID). Set "playlists": "auto" to instead discover
-  every playlist on the channel automatically.
 """
 
 import datetime
@@ -48,34 +46,14 @@ from pathlib import Path
 # ------------------------------------------------------------------
 CHANNELS = [
     {
+        # Built by its own one-time script, build_numberblocks.py (the eight
+        # official season playlists). "manual" keeps a normal build_catalog.py run
+        # (and the nightly job) from dropping it.
         "id": "numberblocks",
         "title": "Numberblocks",
         "url": "https://www.youtube.com/@Numberblocks",
-        "youtubeChannelId": "UCPlwvN0w4qFSP1FllALB92w",
         "color": "#e5322d",
-        # The eight official "FULL EPISODES" season playlists, in order.
-        # Each is a complete season, so these become the "Season N" rows
-        # your child browses. Episodes are ordered by their S# E# tag.
-        "playlists": [
-            {"id": "PL9swKX1PviEr9UfByZqJYiN8KX3AXqyXm",
-             "title": "Season 1", "color": "#d11f1f"},   # 15 eps
-            {"id": "PL9swKX1PviEpC7x7ZzmxZTVrwOV2zitcu",
-             "title": "Season 2", "color": "#f57c00"},   # 15 eps
-            {"id": "PL9swKX1PviEruaholwotM1lOcNCQuweCl",
-             "title": "Season 3", "color": "#ffd21e"},   # 30 eps
-            {"id": "PL9swKX1PviEqpJgWu9DzINYclNC-rzOiF",
-             "title": "Season 4", "color": "#5fbf3b"},   # 30 eps
-            {"id": "PL9swKX1PviEph7heoMnLEfW2y28kwLNZw",
-             "title": "Season 5", "color": "#39b6ff"},   # 30 eps
-            {"id": "PL9swKX1PviEqUShSKIf5iS99jq1qAFztz",
-             "title": "Season 6", "color": "#7a52cc"},   # 15 eps
-            {"id": "PL9swKX1PviEovgpCesV8muL-i8RwogKvL",
-             "title": "Season 7", "color": "#e91e8c"},   # 15 eps
-            {"id": "PL9swKX1PviErV5UKYedc69ITUoipMhr9M",
-             "title": "Season 8", "color": "#00b8a9"},   # 30 eps
-        ],
-        # keywords used only when "playlists": "auto"
-        "auto_keywords": ["season", "series", "full episode"],
+        "manual": True,
     },
     {
         "id": "kidcrew",
@@ -139,23 +117,47 @@ CHANNELS = [
         # "Season N" rows by episode. "manual" keeps a normal run from clobbering it.
         "manual": True,
     },
+    # --- one-off manual stubs (auto-added by build_from_csv.py / build_numberblocks.py) ---
 ]
 
-# NOTE: "source" controls HOW a channel is scraped ("videos" tab, "playlists",
-# or "auto"). "auto_update" is separate — set it True on any channel you want the
-# nightly job to refresh, regardless of how it's scraped. Channels without it
-# (e.g. Numberblocks) are scraped once and then left frozen.
+# NOTE: "source" controls HOW a channel is scraped (currently just the "videos"
+# tab). "auto_update" is separate — set it True on any channel you want the nightly
+# job to refresh. "manual": True channels are built by their own one-off scripts
+# (Numberblocks, Postman Pat, Octonauts) and are preserved, never rebuilt here.
 
-MAX_VIDEOS_PER_PLAYLIST = 200
 OUTPUT = Path(__file__).with_name("catalog.json")
+
+# Marker line inside CHANNELS (above) where register_manual_stub() inserts stubs.
+STUB_MARKER = ("    # --- one-off manual stubs (auto-added by build_from_csv.py "
+               "/ build_numberblocks.py) ---\n")
 
 # How many videos to fully-extract per "videos" channel (full extraction = EXACT
 # upload dates, but slower). The local bootstrap does the whole back-catalogue;
-# the nightly job only refreshes the most recent ones and merges (see update_kidcrew).
+# the nightly job only refreshes the most recent ones and merges (see update_nightly).
 BOOTSTRAP_VIDEO_LIMIT = 400
 NIGHTLY_VIDEO_LIMIT = 5      # these channels post rarely; just catch new uploads
 
-SE_RE = re.compile(r"S\s*(\d+)\s*E\s*(\d+)", re.I)
+
+def register_manual_stub(channel_id, title, url=None, color="#4a6cf7"):
+    """Idempotently add a `manual: True` stub for `channel_id` to CHANNELS in this
+    file, so a full build_catalog.py run (and the nightly job) preserve the one-off
+    channel that another script spliced into catalog.json. Returns True if it was
+    added, False if a stub/entry for that id already existed."""
+    src = Path(__file__)
+    text = src.read_text(encoding="utf-8")
+    if re.search(rf'"id"\s*:\s*"{re.escape(channel_id)}"', text):
+        return False
+    if STUB_MARKER not in text:
+        raise SystemExit(f"register_manual_stub: marker not found in {src.name}")
+    lines = ["    {",
+             f'        "id": "{channel_id}", "title": {json.dumps(title)},']
+    if url:
+        lines.append(f'        "url": "{url}",')
+    lines.append(f'        "color": "{color}", "manual": True,')
+    lines.append("    },")
+    stub = "\n".join(lines) + "\n"
+    src.write_text(text.replace(STUB_MARKER, stub + STUB_MARKER, 1), encoding="utf-8")
+    return True
 
 
 # ------------------------------------------------------------------
@@ -555,66 +557,6 @@ def collect_videos(base_cmd, ch, limit):
     }
 
 
-def parse_episode(raw_title):
-    """Return (clean_name, season, episode) from a raw YouTube title."""
-    season = episode = None
-    m = SE_RE.search(raw_title)
-    if m:
-        season, episode = int(m.group(1)), int(m.group(2))
-    # clean display name = text before the first "|"
-    name = raw_title.split("|")[0].strip()
-    if not name:
-        name = raw_title.strip()
-    return name, season, episode
-
-
-def collect_playlist(base_cmd, pl):
-    pl_url = f"https://www.youtube.com/playlist?list={pl['id']}"
-    print(f"  - {pl['title']}")
-    data = ytdlp_json(base_cmd, pl_url,
-                      extra=["--playlist-end", str(MAX_VIDEOS_PER_PLAYLIST)])
-    eps = []
-    for v in (data or {}).get("entries") or []:
-        if not v or not v.get("id"):
-            continue
-        raw = v.get("title") or ""
-        name, season, episode = parse_episode(raw)
-        eps.append({
-            "name": name,
-            "rawTitle": raw,
-            "season": season,
-            "episode": episode,
-            "videoId": v["id"],
-            "thumbnail": thumb(v["id"]),
-            "url": f"https://www.youtube.com/watch?v={v['id']}",
-            "duration": v.get("duration"),
-            "durationText": hms(v.get("duration")),
-        })
-    # order: by (season, episode) when tags exist, else keep playlist order
-    if all(e["season"] is not None and e["episode"] is not None for e in eps) and eps:
-        eps.sort(key=lambda e: (e["season"], e["episode"]))
-    # renumber a simple display index
-    for i, e in enumerate(eps, start=1):
-        e["episode_index"] = i
-    print(f"      {len(eps)} videos")
-    return eps
-
-
-def discover_playlists(base_cmd, ch):
-    print("  discovering playlists…")
-    data = ytdlp_json(base_cmd, ch["url"].rstrip("/") + "/playlists")
-    kws = ch.get("auto_keywords", [])
-    found = []
-    for e in (data or {}).get("entries") or []:
-        if not e or not e.get("id"):
-            continue
-        title = e.get("title") or "Playlist"
-        if kws and not any(k in title.lower() for k in kws):
-            continue
-        found.append({"id": e["id"], "title": title, "color": ch.get("color")})
-    return found
-
-
 def build_channel(base_cmd, ch, videos_limit=BOOTSTRAP_VIDEO_LIMIT):
     print(f"\n== {ch['title']} ==")
 
@@ -635,28 +577,9 @@ def build_channel(base_cmd, ch, videos_limit=BOOTSTRAP_VIDEO_LIMIT):
             "collections": collections,
         }
 
-    pls = ch.get("playlists")
-    if pls == "auto":
-        pls = discover_playlists(base_cmd, ch)
-    collections = []
-    for pl in pls:
-        eps = collect_playlist(base_cmd, pl)
-        if eps:
-            collections.append({
-                "id": pl["id"],
-                "title": pl["title"],
-                "color": pl.get("color", ch.get("color")),
-                "episodes": eps,
-            })
-    total = sum(len(c["episodes"]) for c in collections)
-    print(f"  => {len(collections)} collections, {total} videos")
-    return {
-        "id": ch["id"],
-        "title": ch["title"],
-        "youtubeChannelId": ch.get("youtubeChannelId"),
-        "color": ch.get("color", "#4a6cf7"),
-        "collections": collections,
-    }
+    raise SystemExit(f"build_channel: channel '{ch.get('id')}' has no supported "
+                     f"source (expected 'videos'; playlist channels like Numberblocks "
+                     f"are built by build_numberblocks.py)")
 
 
 def main():

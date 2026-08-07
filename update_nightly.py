@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 """
-update_kidcrew.py  —  nightly refresh of the auto-updating channels
+update_nightly.py  —  nightly refresh of the auto-updating channels.
 
-Runs on the GitHub Action. For each channel flagged "auto_update": True it
-re-scrapes only the most recent videos (NIGHTLY_VIDEO_LIMIT) with exact dates, then
-MERGES them into the existing catalog.json — keeping the older episodes (and their
-exact dates from your one-time local build_catalog.py run) untouched. Channels
-without "auto_update" (e.g. Numberblocks) are left exactly as they are.
+Runs on the GitHub Action. For each channel flagged "auto_update": True in
+build_catalog.CHANNELS (currently Kid Crew, Half-Asleep Chris, David Rule) it
+re-scrapes only the most recent videos (NIGHTLY_VIDEO_LIMIT), then MERGES them into
+the existing catalog.json — keeping older episodes and their captured dates, and
+leaving every other channel (Numberblocks, Postman Pat, Octonauts, and any one-off
+CSV channels) exactly as they are.
 
-Bootstrap once, locally:  python build_catalog.py   (does the full back-catalogue
-with exact dates), then commit catalog.json.
+Bootstrap once, locally:  python build_catalog.py   (full back-catalogue with exact
+dates for the videos channels), then commit catalog.json.
 """
 
 import json
@@ -71,9 +72,9 @@ def main():
             channels.append(merge_recent(fresh, existing.get(ch["id"])))
             refreshed.append(ch["title"])
         elif ch["id"] in existing:
-            channels.append(existing[ch["id"]])   # preserve as-is
+            channels.append(existing[ch["id"]])   # preserve as-is (manual / one-off)
 
-    catalog = {"generatedWith": "update_kidcrew.py", "channels": channels}
+    catalog = {"generatedWith": "update_nightly.py", "channels": channels}
     OUTPUT.write_text(json.dumps(catalog, indent=2, ensure_ascii=False),
                       encoding="utf-8")
     print("Refreshed recent videos for: " + ", ".join(refreshed))

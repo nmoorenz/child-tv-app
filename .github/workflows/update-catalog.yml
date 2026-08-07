@@ -23,8 +23,8 @@ jobs:
       - name: Install yt-dlp
         run: pip install -U yt-dlp
 
-      - name: Refresh Kid Crew
-        run: python update_kidcrew.py
+      - name: Refresh nightly channels
+        run: python update_nightly.py
 
       - name: Commit if the catalog changed
         run: |
