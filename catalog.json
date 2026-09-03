@@ -2238,7 +2238,7 @@
           "color": "#00a3e0",
           "episodes": [
             {
-              "name": "Cleaning up semi truck chemical spill with hazmat fire truck. Educational | Kid Crew",
+              "name": "Cleaning up mystery semi truck slime spill with hazmat fire truck. Educational | Kid Crew",
               "videoId": "bie0Tf5mTiE",
               "thumbnail": "https://i.ytimg.com/vi/bie0Tf5mTiE/hqdefault.jpg",
               "url": "https://www.youtube.com/watch?v=bie0Tf5mTiE",
@@ -3190,22 +3190,13 @@
           "color": "#6c5ce7",
           "episodes": [
             {
-              "name": "I Made 100 GIANT LEGO-style Pieces",
+              "name": "I Made GIANT LEGO-style Pieces",
               "videoId": "NVLDqaSJN4o",
               "thumbnail": "https://i.ytimg.com/vi/NVLDqaSJN4o/hqdefault.jpg",
               "url": "https://www.youtube.com/watch?v=NVLDqaSJN4o",
-              "duration": 580,
-              "durationText": "9:40",
+              "duration": 581,
+              "durationText": "9:41",
               "subtitle": "29 Aug 2026"
-            },
-            {
-              "name": "Bella 2009-2026",
-              "videoId": "hW7IxG-EUNw",
-              "thumbnail": "https://i.ytimg.com/vi/hW7IxG-EUNw/hqdefault.jpg",
-              "url": "https://www.youtube.com/watch?v=hW7IxG-EUNw",
-              "duration": 88,
-              "durationText": "1:28",
-              "subtitle": "8 Jul 2026"
             },
             {
               "name": "Remembering Bella",
@@ -3233,6 +3224,15 @@
               "duration": 533,
               "durationText": "8:53",
               "subtitle": "11 Jul 2026"
+            },
+            {
+              "name": "Bella 2009-2026",
+              "videoId": "hW7IxG-EUNw",
+              "thumbnail": "https://i.ytimg.com/vi/hW7IxG-EUNw/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=hW7IxG-EUNw",
+              "duration": 88,
+              "durationText": "1:28",
+              "subtitle": "8 Jul 2026"
             },
             {
               "name": "What My CATS Do At NIGHT...",
@@ -3971,12 +3971,21 @@
           "color": "#e67e22",
           "episodes": [
             {
+              "name": "5 Days Solo Island Survival (No Food, Water, or Shelter)",
+              "videoId": "ZgSdKNi6LTU",
+              "thumbnail": "https://i.ytimg.com/vi/ZgSdKNi6LTU/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=ZgSdKNi6LTU",
+              "duration": 1831,
+              "durationText": "30:31",
+              "subtitle": "22 Jun 2026"
+            },
+            {
               "name": "I Built a REAL Hobbit House in New Zealand",
               "videoId": "PZ4EW6sO8gI",
               "thumbnail": "https://i.ytimg.com/vi/PZ4EW6sO8gI/hqdefault.jpg",
               "url": "https://www.youtube.com/watch?v=PZ4EW6sO8gI",
-              "duration": 2459,
-              "durationText": "40:59",
+              "duration": 2460,
+              "durationText": "41:00",
               "subtitle": "2 May 2026"
             },
             {
@@ -3987,15 +3996,6 @@
               "duration": 2714,
               "durationText": "45:14",
               "subtitle": "6 Dec 2025"
-            },
-            {
-              "name": "5 Days Solo Island Survival (No Food, Water, or Shelter)",
-              "videoId": "ZgSdKNi6LTU",
-              "thumbnail": "https://i.ytimg.com/vi/ZgSdKNi6LTU/hqdefault.jpg",
-              "url": "https://www.youtube.com/watch?v=ZgSdKNi6LTU",
-              "duration": 1831,
-              "durationText": "30:31",
-              "subtitle": "22 Jun 2026"
             },
             {
               "name": "I Built an Alaskan Survival Cabin",
