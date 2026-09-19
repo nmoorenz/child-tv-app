@@ -3190,6 +3190,15 @@
           "color": "#6c5ce7",
           "episodes": [
             {
+              "name": "I Wrote a BOOK!",
+              "videoId": "lCj7dTT4SGs",
+              "thumbnail": "https://i.ytimg.com/vi/lCj7dTT4SGs/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=lCj7dTT4SGs",
+              "duration": 533,
+              "durationText": "8:53",
+              "subtitle": "19 Sep 2026"
+            },
+            {
               "name": "I Made 100 GIANT LEGO-style Pieces",
               "videoId": "NVLDqaSJN4o",
               "thumbnail": "https://i.ytimg.com/vi/NVLDqaSJN4o/hqdefault.jpg",
