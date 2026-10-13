@@ -67,7 +67,21 @@ dependencies {
     implementation("androidx.media3:media3-exoplayer:1.3.1")
     implementation("androidx.media3:media3-ui:1.3.1")
     implementation("androidx.media3:media3-datasource-okhttp:1.3.1")
-    implementation("com.github.TeamNewPipe:NewPipeExtractor:v0.26.4")
+    // LibreTube's NewPipeExtractor fork, pinned to its NEWEST commit (e821b96,
+    // 2026-08-19): "Allow extraction of SABR-only streams" + "Use visionOS client for
+    // streaming data (ANDROID client recently started to require poTokens)".
+    // Context: YouTube (mid-Aug 2026) began requiring poTokens on the ANDROID/IOS
+    // clients and enforcing SABR, breaking on-device extraction — this currently breaks
+    // LibreTube too. Its shipped pin (76e7ea7) predates this fix; e821b96 is the fresh
+    // fix attempt, not yet in a LibreTube release, so it's UNPROVEN. When LibreTube
+    // plays again, match its libs.versions.toml `newpipeextractor` commit. Our bare
+    // ExoPlayer only plays progressive URLs, so this hinges on the visionOS client still
+    // returning non-SABR URLs.
+    implementation("com.github.libre-tube:NewPipeExtractor:e821b96")
+    // Runtime dependency for the fork's SABR handling (generated protobuf classes need
+    // the javalite runtime). Usually pulled transitively; declared explicitly to match
+    // LibreTube and avoid a NoClassDefFoundError at playback time. Same version they pin.
+    implementation("com.google.protobuf:protobuf-javalite:4.33.5")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
     // Back-fills modern Java APIs onto old Android. The "_nio" variant is REQUIRED

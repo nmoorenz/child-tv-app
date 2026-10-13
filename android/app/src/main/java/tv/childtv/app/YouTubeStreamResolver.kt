@@ -4,6 +4,7 @@ import org.schabi.newpipe.extractor.MediaFormat
 import org.schabi.newpipe.extractor.NewPipe
 import org.schabi.newpipe.extractor.ServiceList
 import org.schabi.newpipe.extractor.stream.AudioStream
+import org.schabi.newpipe.extractor.stream.AudioTrackType
 import org.schabi.newpipe.extractor.stream.DeliveryMethod
 import org.schabi.newpipe.extractor.stream.Stream
 import org.schabi.newpipe.extractor.stream.StreamInfo
@@ -75,8 +76,16 @@ object YouTubeStreamResolver {
 
     private fun bestAudio(streams: List<AudioStream>): AudioStream? {
         val usableStreams = streams.filter { usable(it) }
+        // Pick the audio track by preference so YouTube auto-dubs (e.g. David Rule's
+        // Spanish/Hindi tracks) don't hijack playback: the ORIGINAL track first, then
+        // an explicit English track, then a single-track video (null track type),
+        // else anything usable.
+        val pool = usableStreams.filter { it.audioTrackType == AudioTrackType.ORIGINAL }
+            .ifEmpty { usableStreams.filter { it.audioLocale?.language == "en" } }
+            .ifEmpty { usableStreams.filter { it.audioTrackType == null } }
+            .ifEmpty { usableStreams }
         // Prefer AAC (m4a) for old-TV compatibility, else the best available.
-        return usableStreams.filter { it.format == MediaFormat.M4A }.maxByOrNull { it.averageBitrate }
-            ?: usableStreams.maxByOrNull { it.averageBitrate }
+        return pool.filter { it.format == MediaFormat.M4A }.maxByOrNull { it.averageBitrate }
+            ?: pool.maxByOrNull { it.averageBitrate }
     }
 }
