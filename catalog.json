@@ -3208,6 +3208,15 @@
           "color": "#6c5ce7",
           "episodes": [
             {
+              "name": "My Cat Henry's 1st BIRTHDAY!",
+              "videoId": "BOYbD1GA4aY",
+              "thumbnail": "https://i.ytimg.com/vi/BOYbD1GA4aY/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=BOYbD1GA4aY",
+              "duration": 491,
+              "durationText": "8:11",
+              "subtitle": "17 Oct 2026"
+            },
+            {
               "name": "I Wrote a BOOK!",
               "videoId": "lCj7dTT4SGs",
               "thumbnail": "https://i.ytimg.com/vi/lCj7dTT4SGs/hqdefault.jpg",
