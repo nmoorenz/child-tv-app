@@ -4016,6 +4016,15 @@
           "color": "#e67e22",
           "episodes": [
             {
+              "name": "I Built the World's Smallest Houseboat",
+              "videoId": "r18NizQjJRo",
+              "thumbnail": "https://i.ytimg.com/vi/r18NizQjJRo/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=r18NizQjJRo",
+              "duration": 2656,
+              "durationText": "44:16",
+              "subtitle": "29 Oct 2026"
+            },
+            {
               "name": "5 Days Solo Island Survival (No Food, Water, or Shelter)",
               "videoId": "ZgSdKNi6LTU",
               "thumbnail": "https://i.ytimg.com/vi/ZgSdKNi6LTU/hqdefault.jpg",
