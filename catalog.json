@@ -3235,6 +3235,15 @@
               "subtitle": "31 Oct 2026"
             },
             {
+              "name": "My Cat Henry's 1st BIRTHDAY!",
+              "videoId": "BOYbD1GA4aY",
+              "thumbnail": "https://i.ytimg.com/vi/BOYbD1GA4aY/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=BOYbD1GA4aY",
+              "duration": 491,
+              "durationText": "8:11",
+              "subtitle": "17 Oct 2026"
+            },
+            {
               "name": "I Wrote a BOOK!",
               "videoId": "lCj7dTT4SGs",
               "thumbnail": "https://i.ytimg.com/vi/lCj7dTT4SGs/hqdefault.jpg",
@@ -3248,18 +3257,9 @@
               "videoId": "NVLDqaSJN4o",
               "thumbnail": "https://i.ytimg.com/vi/NVLDqaSJN4o/hqdefault.jpg",
               "url": "https://www.youtube.com/watch?v=NVLDqaSJN4o",
-              "duration": 580,
-              "durationText": "9:40",
+              "duration": 581,
+              "durationText": "9:41",
               "subtitle": "29 Aug 2026"
-            },
-            {
-              "name": "My Cat Henry's 1st BIRTHDAY!",
-              "videoId": "BOYbD1GA4aY",
-              "thumbnail": "https://i.ytimg.com/vi/BOYbD1GA4aY/hqdefault.jpg",
-              "url": "https://www.youtube.com/watch?v=BOYbD1GA4aY",
-              "duration": 491,
-              "durationText": "8:11",
-              "subtitle": "17 Oct 2026"
             },
             {
               "name": "Remembering Bella",
@@ -4034,24 +4034,6 @@
           "color": "#e67e22",
           "episodes": [
             {
-              "name": "I Built a REAL Hobbit House in New Zealand",
-              "videoId": "PZ4EW6sO8gI",
-              "thumbnail": "https://i.ytimg.com/vi/PZ4EW6sO8gI/hqdefault.jpg",
-              "url": "https://www.youtube.com/watch?v=PZ4EW6sO8gI",
-              "duration": 2459,
-              "durationText": "40:59",
-              "subtitle": "2 May 2026"
-            },
-            {
-              "name": "I Built an Alaskan Survival Cabin",
-              "videoId": "NX6-OwQgqLg",
-              "thumbnail": "https://i.ytimg.com/vi/NX6-OwQgqLg/hqdefault.jpg",
-              "url": "https://www.youtube.com/watch?v=NX6-OwQgqLg",
-              "duration": 2076,
-              "durationText": "34:36",
-              "subtitle": "24 Aug 2025"
-            },
-            {
               "name": "I Built the World's Smallest Houseboat",
               "videoId": "r18NizQjJRo",
               "thumbnail": "https://i.ytimg.com/vi/r18NizQjJRo/hqdefault.jpg",
@@ -4070,6 +4052,15 @@
               "subtitle": "22 Jun 2026"
             },
             {
+              "name": "I Built a REAL Hobbit House in New Zealand",
+              "videoId": "PZ4EW6sO8gI",
+              "thumbnail": "https://i.ytimg.com/vi/PZ4EW6sO8gI/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=PZ4EW6sO8gI",
+              "duration": 2460,
+              "durationText": "41:00",
+              "subtitle": "2 May 2026"
+            },
+            {
               "name": "I Turned a $3000 Trailer into a Luxury Camper",
               "videoId": "FAjhOqMrky4",
               "thumbnail": "https://i.ytimg.com/vi/FAjhOqMrky4/hqdefault.jpg",
@@ -4077,6 +4068,15 @@
               "duration": 2714,
               "durationText": "45:14",
               "subtitle": "6 Dec 2025"
+            },
+            {
+              "name": "I Built an Alaskan Survival Cabin",
+              "videoId": "NX6-OwQgqLg",
+              "thumbnail": "https://i.ytimg.com/vi/NX6-OwQgqLg/hqdefault.jpg",
+              "url": "https://www.youtube.com/watch?v=NX6-OwQgqLg",
+              "duration": 2076,
+              "durationText": "34:36",
+              "subtitle": "24 Aug 2025"
             },
             {
               "name": "Overnight in The World's Most Isolated Desert Hotels",
