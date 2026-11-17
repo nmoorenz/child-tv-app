@@ -481,7 +481,7 @@ def build_grouped_videos_channel(base_cmd, ch, limit):
     }
 
 
-def collect_videos(base_cmd, ch, limit):
+def collect_videos(base_cmd, ch, limit, quiet=False):
     """Videos-tab mode: newest-first, up to `limit` videos, filtered by
     max_duration_seconds / min_date.
 
@@ -547,27 +547,31 @@ def collect_videos(base_cmd, ch, limit):
         ])
         eps, over, before = build((data or {}).get("entries") or [])
 
-    print(f"      {over} over-length · {before} before cutoff · {len(eps)} kept")
-    # Videos tab is already newest-first (reverse chronological).
+    if not quiet:
+        print(f"      {over} over-length · {before} before cutoff · {len(eps)} kept")
+    # Videos tab is already newest-first (reverse chronological). _scan lets a caller
+    # (update_nightly) print its own summary; it's stripped before writing catalog.
     return {
         "id": "latest",
         "title": ch["title"],
         "color": ch.get("color"),
         "episodes": eps,
+        "_scan": {"over": over, "before": before},
     }
 
 
-def build_channel(base_cmd, ch, videos_limit=BOOTSTRAP_VIDEO_LIMIT):
+def build_channel(base_cmd, ch, videos_limit=BOOTSTRAP_VIDEO_LIMIT, quiet=False):
     print(f"\n== {ch['title']} ==")
 
     if ch.get("source") == "videos" and ch.get("wiki"):
         return build_grouped_videos_channel(base_cmd, ch, videos_limit)
 
     if ch.get("source") == "videos":
-        collection = collect_videos(base_cmd, ch, videos_limit)
+        collection = collect_videos(base_cmd, ch, videos_limit, quiet=quiet)
+        if not quiet:
+            collection.pop("_scan", None)   # not needed in the local bootstrap output
+            print(f"  => 1 collection, {len(collection['episodes'])} videos")
         collections = [collection] if collection["episodes"] else []
-        total = len(collection["episodes"])
-        print(f"  => 1 collection, {total} videos")
         return {
             "id": ch["id"],
             "title": ch["title"],

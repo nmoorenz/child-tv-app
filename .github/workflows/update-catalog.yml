@@ -2,7 +2,9 @@ name: Update catalog
 
 on:
   schedule:
-    - cron: '0 16 * * *'   # daily ~ early morning New Zealand time
+    # 12:12 UTC, off the top of the hour to dodge the busiest scheduler slot.
+    # GitHub cron is UTC only and best-effort, so the actual run can still be late.
+    - cron: '12 12 * * *'
   workflow_dispatch:
 
 permissions:
